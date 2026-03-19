@@ -1,0 +1,33 @@
+:root {
+  --md-primary-fg-color: #137FEC;
+  --md-primary-fg-color--light: #3d9af0;
+  --md-primary-fg-color--dark: #0d65c8;
+  --md-accent-fg-color: #137FEC;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #137FEC;
+  --md-default-bg-color: #1a1a2e;
+  --md-default-fg-color: #e0e0e0;
+}
+
+.md-header {
+  background-color: #137FEC;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-reading { background: #137FEC22; color: #137FEC; border: 1px solid #137FEC44; }
+.badge-completed { background: #2e7d3222; color: #4caf50; border: 1px solid #4caf5044; }
+.badge-wishlist { background: #f5750022; color: #ff9800; border: 1px solid #ff980044; }
+.badge-paused { background: #78787822; color: #9e9e9e; border: 1px solid #9e9e9e44; }
+
+.priority-high { color: #f44336; font-weight: 700; }
+.priority-medium { color: #ff9800; font-weight: 600; }
+.priority-low { color: #9e9e9e; }
