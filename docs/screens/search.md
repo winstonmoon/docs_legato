@@ -18,41 +18,75 @@
 
 ## Initial State UI 구성
 
-> Stitch 디자인: **Search - Initial (Light)** / **Search - Initial (Dark)**
+> Stitch 디자인: **Search - Initial (Light)** / **Search - Initial with Barcode Icon (Dark)**
 
 | 구성 요소 | 설명 |
 |---|---|
-| 검색 바 | 탭 시 검색 입력 모드로 전환 |
+| 검색 바 | 탭 시 검색 입력 모드로 전환; 오른쪽 끝에 **바코드 스캐너 아이콘** (`barcode_scanner`) 배치 |
 | Hero 섹션 | 마스코트 일러스트 + "Find your next story" 헤딩 + 서브 텍스트 |
-| Recent Searches | 최근 검색어 칩 목록 (칩별 ✕ 버튼 + "Clear all" 버튼) |
+| Recent Searches | 최근 검색어 도서 카드 목록 (표지, 제목, 저자, `history` 아이콘) + "Clear all" 버튼 |
 | Explore Genres | 장르 필터 칩 가로 스크롤 목록 |
-| Popular This Week | 이번 주 인기 도서 카드 (표지, 제목, 저자) |
 | 하단 내비게이션 | Home · Search · Library · Profile |
+
+!!! note "바코드 스캐너 아이콘"
+    검색 바 오른쪽 `barcode_scanner` 아이콘 탭 → **ISBN 바코드 스캔** 기능 실행.
+    이미 구현된 `IsbnBarcodeScanner` expect/actual과 연결.
 
 ### Stitch 스크린샷
 
 === "Light"
-    ![Search Initial Light](https://lh3.googleusercontent.com/aida/ADBb0ugB26zYwtKZkOs_shLBVAfE2NTvIcWSXGDyhC4dl8gE7x3Cc3i-La83sVOvsEulET8LjQoiweoTmPxgB2Mq4d2FO93HA5CdIo1ntMLFsn5NGzijqdmx3WzULJHT5c-XAyz7szbcOr84RrwUZu2CJFWteA7qhVI6z8bgRMYUoZEvphyQ-3rz0RoplLIZaJ3Hv3yk1SBxvl2THIiNdl_LThFC_xSQ4a3_eTWqKiwZ_fpoQzWtHNu_DvTDnyQ)
+    ![Search Initial Light](https://lh3.googleusercontent.com/aida/ADBb0ujX2VTOwnr_JHXKwyjIZ6x-rnZ7t-xJh6CQv06gxttR_bu62s7DIRx9-9HTiF_rjaMuJdBvF5SY-t6N3BQHWu6ExL7T23E3EMZLKCQS2qCQpG08vyCWXzuMEtl-3XoU6HnJDow4xVfHMeCsIqfC1pdwjoQJD1dfcWHFxjBYKSpT57EUdPrsfU_md86oSKlElYrRchgoLU3ffkuksbfsK7SAZbGEYw97aQtjCUnHvNwe0e491rzjMnAWZyM)
 
 === "Dark"
-    ![Search Initial Dark](https://lh3.googleusercontent.com/aida/ADBb0ugb-hbrDlxq7KzLGlo_6Z5jU9RmNt-H-ZLoUVWGxU90vC2YiI_8JLtdTgfkuq2PsN7NN2kUU7h5z9s9Z7DceB6hIoXMsiJUCjUc9dseItEPkkanCJ7ENhPBqeaZ4fcU9dL_Ip8H8V1zNNjw1QyZ1q9v_v3UWaIbbUPqzfnAly50Fx0AyvHMwRNkUwElHhykXoBmgWDonbQWJWYUKigP0m2aTbGB9vYM30aUUbj9xuS80aYrcpm4UHxU2V0)
+    ![Search Initial Dark](https://lh3.googleusercontent.com/aida/ADBb0uj7tvHGE_VDi0_e-brpBGh7D53gkymoxNmgEz9m3tMLAdR1P-ydi5x68As3FLXUhnlCRZLTc7LhKCPGPWpv4DzPX7pUDMa51am8UEda9xPwTSeov48pBjbp96VhMoMUfFji34n0IP03kz_58xG9BadmVrlxPleS0EEmzA2AesMbQ0EaUivijGq_oBvDLEEkNoSrSoDzOCAO3qWMAVgjtovy1LuJC2UOs6hD6yYga5V7HlXIGHszw39qdQ)
 
 ---
 
 ## Search Results UI 구성
 
-> Stitch 디자인: **Search and Add Book Updated**
+> Stitch 디자인: **Search and Add Book Updated** / **Search and Add (Light)**
 
 | 구성 요소 | 설명 |
 |---|---|
-| 검색 입력 필드 | 뒤로가기 버튼 + "Search Books" 타이틀 |
+| 검색 입력 필드 | 뒤로가기 버튼 + 검색 입력창 |
 | 필터 바 | Genre · Author · Rating · Year 드롭다운 칩 (가로 스크롤) |
 | 검색 결과 리스트 | 책 표지, 제목, 저자, 별점(★), 출판 연도, Add/Added 버튼 |
 | 하단 내비게이션 | Home · Search · Library · Profile |
 
 ### Stitch 스크린샷
 
-![Search and Add Updated](https://lh3.googleusercontent.com/aida/ADBb0ugnOlahDZq30aIqFzZsRfnYSzuXOxV6Ly-WB-Q4KrJC7CO28U_9KUhyRAkmsqAR35jI8seiIxYBpLM7zIdl0NBbiXcgzdTb3ggzQpnj4q0q0RYWrt6uRnfa5VLx1NVYrZwJxjeY3F-IcQL2m53WYxUzCFNkoW809dFdokXUMiZFHyzC9PJWspxrKYBE1lFooick0aVmHMInSJCvxys7lFqQo_JFrY3WGr6rChJNy1I0NtNxgrH9YzRhog)
+=== "Dark"
+    ![Search and Add Updated Dark](https://lh3.googleusercontent.com/aida/ADBb0uiRZhVVCil0kzOTNdp5BEuKXdds1PlQFJ5nYQfwaSblu2MtxkL05_N0JjJUF_yW7MoPEVnvYHMYQX4Puv3qrUF61dwqJrA0NGdhwiznj22WMKoSPaZXQW5t6FVjtDDCpL8DzXBC-OVTjdo0cpjWGw2IMKIt9DPp8ut5YwAMcE-fWaORLcBzNONHkGfsPKc408JX6rULwQFmxsuuryouSvX9H8XJILCBVq2USDzFcirit4YJheB9oNprTYk)
+
+=== "Light"
+    ![Search and Add Light](https://lh3.googleusercontent.com/aida/ADBb0ugISkI2gvNnOIMqhf0G8T9jINGYr9j-9P1OnIRzoFN8I2KGEh108f59tRbVXLrNFAcj2S7xD9DNePx316U8YQZl4BdGqiRMIIfGxB6vdtuSiJ0GOSqr6xvPiOsGX1RLr1jKmhKVrTnjpTMcOYsaTIA5dk9sXaUaqa4KIEZviOxrOYWL5Lq3dMMed1esBb-M5xVjzEO0PBUObwtm2WhwDbi5qBFbQasdhXO8Y5YoUMd2uOTZUHQy8NryckA)
+
+---
+
+## No Results 상태 UI 구성
+
+> Stitch 디자인: **Search No Results (Light) - with Manual Entry button** / **Search No Results (Dark) - with Manual Entry button**
+
+| 구성 요소 | 설명 |
+|---|---|
+| 마스코트 일러스트 | 물음표가 붙은 당황한 책 캐릭터 |
+| "No Results Found" 헤딩 | 검색 결과 없음 안내 |
+| 안내 텍스트 | "We couldn't find any books matching your search." |
+| **직접 입력하기** 버튼 | 탭 시 Manual Book Entry 화면으로 이동 |
+| "Clear search history" 링크 | 검색 기록 전체 삭제 |
+| 하단 내비게이션 | Home · Search · Library · Profile |
+
+!!! note "화면 이동 플로우"
+    `NoResults` 상태에서 **직접 입력하기** 버튼 탭 → `SearchSideEffect.NavigateToManualEntry` 발행
+    → `ManualBookEntryScreen`으로 이동.
+
+### Stitch 스크린샷
+
+=== "Light"
+    ![Search No Results Light](https://lh3.googleusercontent.com/aida/ADBb0uj8gb-FHA6VNltsDw6owk2zXRvu0naHk9hWmJlOB4PZnnjAD-JXBPR4bXc9jypyStAwVZV__wzgOLvMlf1p-evJgjYO4qpBgElsm2zkULI4RjoPy089iDz4t9gCNS21LMzsxOAkDEliS_rFIRG2ZrArCRa6oNVPRDJzkB-KycdaG014r-FdTPeAV4kq8nO7wWqz4hFBqGuRSnnycKAAmxPs0i5a5iBvYnKnAFVDnbkpG_ZNA6Ao5L4AVg)
+
+=== "Dark"
+    ![Search No Results Dark](https://lh3.googleusercontent.com/aida/ADBb0ujcQnywq2oNdSe7Q5tWnDeOmwxCH_aAtyIgzA9E6PBkEz9sc0QoKDUfhzrWBkHeXtV-ll1VI8TBv4fOKyRavW69gpWibQNE0RCJ3ZfUeRgiWS-X8ZfVIPQrVoBilh6sS0nYA7ErG3xSZXkjXhHVfVSE5rf241D_IWHOjhgb9HStUxiVnXSEcGygN_u0_iM2tLIZ2CbpdxAZU2M0PZlzrG_sBzQtlDN6VMzA7ty8wQ7_bNERRRG2uR-YnI8)
 
 ---
 
@@ -283,13 +317,17 @@ if (addCount % 3 == 0) { // 3회마다 1번
 ## TODO
 
 - [ ] `SearchScreen` — Initial State Composable 구현 (Light / Dark)
+    - [ ] 검색 바 오른쪽에 `barcode_scanner` 아이콘 배치 → ISBN 바코드 스캔 연동
     - [ ] Hero 섹션 (마스코트 이미지 + "Find your next story" 텍스트)
-    - [ ] Recent Searches 섹션 (칩 + ✕ 버튼 + "Clear all")
+    - [ ] Recent Searches 섹션 (도서 카드 + `history` 아이콘 + "Clear all")
     - [ ] Explore Genres 섹션 (가로 스크롤 칩 목록, `BookGenre` enum 기반)
-    - [ ] Popular This Week 섹션 (Google Books API `orderBy=relevance` 인기 도서)
 - [ ] `SearchScreen` — Results State Composable 구현
     - [ ] 필터 바 (Genre · Author · Rating · Year 드롭다운)
     - [ ] 검색 결과 아이템 (표지, 제목, 저자, 별점, 출판 연도, Add/Added 버튼)
+- [ ] `SearchScreen` — **No Results State** Composable 구현
+    - [ ] 마스코트 일러스트 (물음표 붙은 책 캐릭터)
+    - [ ] "직접 입력하기" 버튼 → `ManualEntryClick` 액션 발행 → `ManualBookEntryScreen` 이동
+    - [ ] "Clear search history" 링크
 - [ ] `RecentSearchRepository` DataStore 구현
     - [ ] `addSearch()` — 중복 제거 + 최대 10개 FIFO
     - [ ] `removeSearch()` — 개별 삭제
@@ -303,4 +341,3 @@ if (addCount % 3 == 0) { // 3회마다 1번
 - [ ] 도서 추가 완료 후 Interstitial 광고 노출 (3회마다 1번)
 - [ ] Analytics 이벤트 로깅
 - [ ] AdMob 배너 광고 영역 (화면 하단, 비프리미엄 사용자)
-- [ ] No Results 상태: "수동으로 입력하기" 버튼 → Manual Book Entry 이동

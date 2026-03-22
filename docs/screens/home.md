@@ -6,35 +6,61 @@
 
 ## UI 구성
 
+> Stitch 디자인: **Home Dashboard - Updated Stats Layout v2** / **Home Dashboard (Light)**
+
+### Stitch 스크린샷
+
+=== "Dark"
+    ![Home Dashboard Dark](https://lh3.googleusercontent.com/aida/ADBb0ujA69r2o8-huWkfE_pjGP1zccyN1ym1AfdYCbcVprD_UcOVt6Ir5ArW-dH3aokUg8wCamuh4XxbFfo1vC-CrY3yrTQZvJ1O70z4_BuMsycdfwbrz63TYLCkN-ekoeaILyArXmDVM16KL_D-UD0njPXQoQadJNCNP_XGAR0B2HiZL2eVaA6b1pxwPCGr1BvLYM2soC7fuKpXi0csU0_k8yokfackaTYNqgQE663wQX_aQC3z9esGCr_grtM)
+
+=== "Light"
+    ![Home Dashboard Light](https://lh3.googleusercontent.com/aida/ADBb0uge749hhYmHJdwg5opEQWN8sh9i88uFazt2FeB6jBjodRvfzYYAvRM66_XGkMTZnxVf6abqY8XVILVf1zzFdGbVaBLCnR1HwOrM30xDuefZQQYP-sfZn6zBsbArhKj-HXEVn0CpKTu64GusxqzWm0JwmEytJrlvTFkLli0jPr8BwE58OT7svYUqBZKsIS6uebezLJvx9RW43Yyq30F7ysVbraQd_SrI_MBlc47xMO13pBVlrWjb0qnYPw)
+
 | 구성 요소 | 설명 |
 |---|---|
-| 환영 메시지 | "안녕하세요, {username}" |
-| 현재 읽는 책 카드 | 표지 이미지, 제목/저자, 진행률 바, "계속 읽기" 버튼 |
+| Current Read 카드 | 표지 이미지, 제목/저자, Chapter X of Y, 진행률 바(%), "Continue Reading" 버튼 |
 | 현재 읽는 책 없음 | Empty State UI |
-| 최근 독서 활동 | 최근 독서 세션 목록 (날짜, 읽은 페이지) |
-| 주간 통계 요약 | 이번 주 읽은 시간 / 페이지 수 카드 |
-| Bottom Navigation | Home / Library / Search / Profile |
+| Reading Stats | 3열 카드 그리드: **Books Read** / **Pages Read** / **Day Streak** |
+| From Your Library | 최근 추가된 도서 가로 스크롤 썸네일 목록 |
+| AdMob 배너 | 하단 네비게이션 바 바로 위 고정 배너 (비프리미엄 사용자) |
+| Bottom Navigation | Home · Search · Library · Profile |
+
+### Reading Stats 카드 상세
+
+| 통계 | 아이콘 | 설명 |
+|---|---|---|
+| Books Read | `menu_book` (파랑) | 완독한 권 수 |
+| Pages Read | `description` (파랑) | 총 읽은 페이지 수 |
+| Day Streak | `whatshot` (주황) | 연속 독서 일 수 |
 
 ---
 
 ## MVI 구조
 
 ```kotlin
+data class ReadingStats(
+    val booksRead: Int = 0,
+    val pagesRead: Int = 0,
+    val dayStreak: Int = 0,
+)
+
 data class HomeUiState(
     val userName: String = "",
     val currentBook: BookItemUiModel? = null,
-    val recentSessions: List<ReadingSessionUiModel> = emptyList(),
-    val weeklyStats: WeeklyStatsUiModel? = null,
+    val readingStats: ReadingStats = ReadingStats(),
+    val libraryPreview: List<BookItemUiModel> = emptyList(),  // "From Your Library" 최근 도서
     val isLoading: Boolean = false,
 )
 
 sealed interface HomeAction {
     data object ContinueReadingClick : HomeAction
-    data class SessionItemClick(val sessionId: String) : HomeAction
+    data class LibraryBookClick(val bookId: String) : HomeAction
+    data object ViewAllClick : HomeAction
 }
 
 sealed interface HomeSideEffect {
     data class NavigateToRecordProgress(val bookId: String) : HomeSideEffect
+    data object NavigateToLibrary : HomeSideEffect
 }
 ```
 
@@ -46,11 +72,11 @@ sealed interface HomeSideEffect {
 // 현재 읽는 책
 bookRepository.observeBooks(status = ReadingStatus.READING)
 
-// 최근 세션
-readingSessionRepository.observeRecentSessions(limit = 5)
+// Reading Stats (완독 수, 총 페이지, 연속 독서일)
+statsRepository.observeReadingStats()
 
-// 주간 통계
-statsRepository.observeWeeklyStats()
+// From Your Library (최근 추가된 도서 미리보기)
+bookRepository.observeRecentBooks(limit = 5)
 ```
 
 ---
@@ -77,17 +103,21 @@ when (windowSizeClass.widthSizeClass) {
 ## TODO
 
 - [ ] `HomeScreen` Composable 구현 (Dark / Light 공통)
-- [ ] 상단 환영 메시지 + 사용자 이름 표시 (Supabase Auth user.displayName 연동)
-- [ ] 현재 읽는 책 카드 컴포넌트 구현
+- [ ] Current Read 카드 컴포넌트 구현
     - [ ] 책 표지 이미지 (Coil KMP로 로드)
     - [ ] 책 제목 / 저자 텍스트
-    - [ ] 진행률 `LinearProgressIndicator` (현재 페이지 / 전체 페이지)
-    - [ ] "계속 읽기" 버튼 → Record Reading Progress 화면으로 이동
+    - [ ] Chapter X of Y 표시
+    - [ ] 진행률 `LinearProgressIndicator` (%) + 퍼센트 텍스트
+    - [ ] "Continue Reading" 버튼 → Record Reading Progress 화면으로 이동
 - [ ] 현재 읽는 책 없을 때 Empty State UI
-- [ ] 최근 독서 세션 목록 (날짜, 읽은 페이지 수)
-- [ ] 주간 독서 통계 요약 카드 (읽은 시간 / 페이지 수)
+- [ ] Reading Stats 3열 카드 그리드 구현
+    - [ ] Books Read (`menu_book`, 파랑 배경)
+    - [ ] Pages Read (`description`, 파랑 배경)
+    - [ ] Day Streak (`whatshot`, 주황 배경)
+- [ ] "From Your Library" 가로 스크롤 섹션 구현 + "View All" 버튼
+- [ ] AdMob 배너 광고 (하단 네비게이션 바 위에 고정, 비프리미엄 사용자)
 - [ ] `HomeViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `ReadingSessionRepository.observeRecentSessions()` 연동
-- [ ] `StatsRepository.observeWeeklyStats()` 연동
-- [ ] Bottom Navigation Bar 구현 (Home / Library / Search / Profile)
+- [ ] `StatsRepository.observeReadingStats()` 연동 (Books Read, Pages Read, Day Streak)
+- [ ] `BookRepository.observeRecentBooks(limit=5)` 연동
+- [ ] Bottom Navigation Bar 구현 (Home · Search · Library · Profile)
 - [ ] Android: `WindowWidthSizeClass` 기반 Adaptive Navigation 구현

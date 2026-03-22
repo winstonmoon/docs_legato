@@ -6,18 +6,31 @@
 
 ## UI 구성
 
+> Stitch 디자인: **Library History - Navigation Updated** / **Library History (Light)**
+
+### Stitch 스크린샷
+
+=== "Dark"
+    ![Library History Dark](https://lh3.googleusercontent.com/aida/ADBb0uhM_iwQMVcniI3XgT_N-GhtKOIFKY0qtQ4DDggjYM9OpzF81ncu63anHrwtmNTeFS95Q09yOrG5NQMsnEFKgInBV2BMuJ1dUM4xlYH_SyA0r2vUjwHvNgbRm16hs1pYdjTJ0cE0ukpo3i7vDLiXLEAmqhAvS5KEZSy6yqL0gUcfIyN5bpTLbLbD0GVzlYMN8zJNo4XTtZE8Kj3B1EUaZg6IsHZOcNU1XqZIuF7j4WsaxsSTVac8blh19Zs)
+
+=== "Light"
+    ![Library History Light](https://lh3.googleusercontent.com/aida/ADBb0uh3BdPZS3fnCNljMRJT-eI_ECenZWOTyECrVT_OpWLHedjq68ym-2pUck9kQnUpPX1FmEG7vyvuD3iXgTi6usaK7782O79rIHR2dfjTVjM9mXd6iEld09Jc9JG2317j3EIvGmfsPIj9dgKGBk9r1RTsqtXFCXXhBz4PTjd58TYTX0hUmvLsQbC5uAc5hHlw_0z107v3dNRHl-XwOvytI0qBwCHjVMjRUfgZeAQQy7yV47KWa93oNrIJuYU)
+
 | 구성 요소 | 설명 |
 |---|---|
-| "Library" 헤더 | 상단 타이틀 |
-| 상태 필터 칩 | All / Reading / Completed / Want to Read |
-| 정렬 옵션 | 최근 추가순 / 제목순 / 저자순 |
-| 도서 목록 | 리스트 뷰 |
-| — 책 표지 썸네일 | Coil KMP 로드 |
-| — 책 제목 / 저자 | 텍스트 |
-| — 독서 상태 배지 | 색상 구분 |
-| — 진행률 바 | READING 상태에서만 표시 |
+| **월별 섹션 헤더** | "September 2023" 형식 + 해당 월 도서 수 배지 (예: "3 Books") |
+| 도서 그리드 | **2열 그리드** (aspect-ratio 2:3 표지) |
+| — 책 표지 썸네일 | Coil KMP 로드, hover 시 scale 효과 |
+| — 완독 배지 | `DONE` (초록 pill 배지, `ReadingStatus.FINISHED`) |
+| — 책 제목 | truncate 처리 |
+| — 완료일 + 별점 | "Sep 2 · ★ 5.0" 형식 |
 | Empty State | 필터 결과 없을 때 안내 UI |
+| Bottom Navigation | Library 탭 활성화 시 pill 배경 강조 (`bg-primary/10`) |
 | AdMob 배너 | 화면 하단 (비프리미엄 사용자) |
+
+!!! note "히스토리 뷰 구조"
+    Library 화면은 **월별 그룹화** 히스토리 뷰가 핵심.
+    완독 날짜 기준으로 `YYYY년 MM월` 섹션으로 묶어 내림차순 정렬.
 
 ---
 
@@ -36,24 +49,24 @@
 ## MVI 구조
 
 ```kotlin
+data class LibraryMonthGroup(
+    val year: Int,
+    val month: Int,
+    val books: List<BookItemUiModel>,
+)
+
 data class LibraryUiState(
-    val books: List<BookItemUiModel> = emptyList(),
-    val selectedFilter: ReadingStatus? = null, // null = All
-    val sortOrder: LibrarySortOrder = LibrarySortOrder.RECENTLY_ADDED,
+    val monthGroups: List<LibraryMonthGroup> = emptyList(),  // 월별 그룹화 히스토리
     val isLoading: Boolean = false,
 )
 
 sealed interface LibraryAction {
-    data class FilterChange(val status: ReadingStatus?) : LibraryAction
-    data class SortChange(val order: LibrarySortOrder) : LibraryAction
     data class BookClick(val bookId: String) : LibraryAction
 }
 
 sealed interface LibrarySideEffect {
     data class NavigateToRecordProgress(val bookId: String) : LibrarySideEffect
 }
-
-enum class LibrarySortOrder { RECENTLY_ADDED, TITLE, AUTHOR }
 ```
 
 ---
@@ -61,9 +74,13 @@ enum class LibrarySortOrder { RECENTLY_ADDED, TITLE, AUTHOR }
 ## Repository 연동
 
 ```kotlin
-bookRepository.observeBooks(status = selectedFilter)
-    .combine(sortOrderFlow) { books, order ->
-        books.sortedWith(order.comparator)
+// 완독 도서를 월별 그룹으로 변환
+bookRepository.observeBooks(status = ReadingStatus.FINISHED)
+    .map { books ->
+        books
+            .sortedByDescending { it.finishedDate }
+            .groupBy { YearMonth(it.finishedDate.year, it.finishedDate.monthNumber) }
+            .map { (ym, books) -> LibraryMonthGroup(ym.year, ym.month, books) }
     }
 ```
 
@@ -72,16 +89,16 @@ bookRepository.observeBooks(status = selectedFilter)
 ## TODO
 
 - [ ] `LibraryScreen` Composable 구현 (Dark / Light 공통)
-- [ ] 상태 필터 칩 UI 구현 (Reading / Completed / Want to Read / All)
-- [ ] 도서 목록 리스트 뷰 구현
-    - [ ] 책 표지 썸네일 (Coil KMP)
-    - [ ] 책 제목 / 저자
-    - [ ] 독서 상태 배지 컴포넌트 (색상 구분)
-    - [ ] 진행률 바 (READING 상태 전용)
-- [ ] 정렬 옵션 UI (최근 추가순 / 제목순 / 저자순)
+- [ ] 월별 섹션 헤더 구현 ("YYYY년 MM월" + 책 수 배지)
+- [ ] 도서 2열 그리드 구현
+    - [ ] 책 표지 썸네일 (Coil KMP, aspect-ratio 2:3)
+    - [ ] hover/press 시 scale 애니메이션
+    - [ ] `DONE` 완독 배지 (초록 pill, 우측 상단 오버레이)
+    - [ ] 책 제목 (truncate) + 완료일 + 별점
+- [ ] Library 탭 활성화 시 pill 배경 강조 네비게이션 구현
 - [ ] 도서 카드 클릭 → Record Reading Progress 화면으로 이동
 - [ ] `LibraryViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `BookRepository.observeBooks(status)` 연동 (상태별 필터)
-- [ ] 도서 목록 없을 때 Empty State UI
+- [ ] `BookRepository.observeBooks(FINISHED)` → 월별 그룹화 변환 로직
+- [ ] 도서 없을 때 Empty State UI
 - [ ] AdMob 배너 광고 영역 (화면 하단, 비프리미엄 사용자)
 - [ ] Analytics: `screen_view` 이벤트 로깅
