@@ -115,6 +115,67 @@ bookRepository.upsertBook(
 
 ---
 
+## 조사 결과: 필드 설계 분석
+
+> 바코드 스캔이나 검색으로 도서를 찾지 못한 경우를 위한 수동 입력 화면이므로,
+> Google Books API에서 자동 취득 가능한 정보도 이 화면에서는 **사용자가 직접 입력**해야 합니다.
+
+### Book 데이터 모델 vs Google Books API 취득 가능 정보
+
+| 데이터 모델 필드 | Google Books API 대응 | 비고 |
+|---|---|---|
+| `title` | `volumeInfo.title` | ✅ API 취득 가능 |
+| `author` | `volumeInfo.authors[]` | ✅ API 취득 가능 |
+| `totalPages` | `volumeInfo.pageCount` | ✅ API 취득 가능 |
+| `coverUri` | `volumeInfo.imageLinks.thumbnail` | ✅ API 취득 가능 |
+| `publisher` | `volumeInfo.publisher` | ✅ API 취득 가능 |
+| `isbn` | `volumeInfo.industryIdentifiers[]` (ISBN_13/10) | ✅ API 취득 가능 |
+| `status` | — | ❌ 사용자 입력 필요 |
+| `currentPage` | — | 기본값 0 (앱 내부 관리) |
+| `startedAt` | — | 상태 변경 시 자동 기록 |
+| `finishedAt` | — | 상태 변경 시 자동 기록 |
+| `id` | — | UUID 자동 생성 |
+
+API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한 필드:
+
+| Google Books API 필드 | 설명 |
+|---|---|
+| `volumeInfo.categories[]` | 장르/카테고리 |
+| `volumeInfo.publishedDate` | 출판일 |
+| `volumeInfo.description` | 책 소개/시놉시스 |
+| `volumeInfo.language` | 언어 (ISO 639-1) |
+
+---
+
+### Manual Entry 입력 항목 분석
+
+#### 현재 구현된 항목
+
+| 항목 | 필수 여부 | 데이터 모델 대응 |
+|---|---|---|
+| 책 표지 이미지 | 선택 | `coverUri` |
+| 책 제목 | ✅ 필수 | `title` |
+| 저자 | ✅ 필수 | `author` |
+| 전체 페이지 수 | ✅ 필수 | `totalPages` |
+| 장르 (Category) | 선택 | 데이터 모델에 `categories` 필드 없음 → 추가 검토 필요 |
+| 장르 태그 | 선택 | 데이터 모델에 `tags` 필드 없음 → 추가 검토 필요 |
+| Notes | 선택 | 데이터 모델에 `notes` 필드 없음 → 추가 검토 필요 |
+
+#### 누락된 항목 (데이터 모델에 존재하나 UI 없음)
+
+| 항목 | 데이터 모델 필드 | 우선순위 |
+|---|---|---|
+| 출판사 | `publisher` | 중간 — 수동 입력 시 기록해두면 유용 |
+| ISBN | `isbn` | 낮음 — 수동 입력이지만 나중에 API 연동 시 활용 가능 |
+| 독서 상태 | `status` | 높음 — 추가 시 WISHLIST/READING 바로 선택 가능해 UX 개선 |
+
+!!! warning "데이터 모델 보완 검토"
+    - `categories` / `tags` 필드: UI에는 이미 구현되어 있으나 `Book` 도메인 모델에 해당 필드가 없음
+    - `notes` 필드: UI에는 구현되어 있으나 `Book` 도메인 모델에 없음
+    - 위 세 필드는 모델 추가 후 Repository 연동이 필요함
+
+---
+
 ## TODO
 
 - [ ] `ManualBookEntryScreen` Composable 구현 (Dark / Light 공통)
