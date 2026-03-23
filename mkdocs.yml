@@ -79,6 +79,7 @@ nav:
   - 화면 스펙:
     - 화면 목록: screens/index.md
     - 로그인: screens/login.md
+    - 회원가입: screens/signup.md
     - 홈 대시보드: screens/home.md
     - 도서관 / 히스토리: screens/library.md
     - 검색 & 도서 추가: screens/search.md
