@@ -115,7 +115,7 @@ supabaseClient.auth.signOut()
 
 ## TODO
 
-- [ ] `ProfileScreen` Composable 구현 (Dark / Light 공통)
+- [x] `ProfileScreen` Composable 구현 (Dark / Light 공통)
 - [ ] 프로필 섹션 구현
     - [ ] 프로필 사진 (Coil KMP, 기본 아바타 fallback, 편집 FAB)
     - [ ] 사용자 이름 / "Reading X books this year" 표시
@@ -132,7 +132,7 @@ supabaseClient.auth.signOut()
 - [ ] 앱 버전 정보 표시 (`BuildConfig.VERSION_NAME`)
 - [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의
 - [ ] `StatsRepository.observeReadingStats()` → dayStreak 포함 연동
-- [ ] `PreferenceRepository` DataStore 연동 (테마, 언어 영속화)
+- [x] `PreferenceRepository` DataStore 연동 (테마, 언어 영속화)
 - [ ] Supabase Auth — 로그아웃 연동
 - [ ] Analytics: `screen_view` 이벤트 로깅
 

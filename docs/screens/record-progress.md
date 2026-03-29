@@ -105,7 +105,7 @@ readingSessionRepository.finishSession(
 
 ## TODO
 
-- [ ] `RecordReadingProgressScreen` Composable 구현
+- [x] `RecordReadingProgressScreen` Composable 구현
 - [ ] 책 표지 헤더 (진행률 바 + "X% Complete" 오버레이 포함)
 - [ ] 책 제목 / 저자 텍스트
 - [ ] 오늘 읽은 페이지 수 스텝퍼 (`-` 버튼 · 숫자 입력 · `+` 버튼)
@@ -113,7 +113,7 @@ readingSessionRepository.finishSession(
 - [ ] Quick Notes 텍스트 에어리어 + 이미지/태그 첨부 버튼
 - [ ] "How was it?" 무드 선택 버튼 4개 (Boring / Okay / Good / Great)
 - [ ] Save Log 버튼 (하단 고정)
-- [ ] `RecordProgressViewModel` / MVI State, Action, SideEffect 정의
+- [x] `RecordProgressViewModel` / MVI State, Action, SideEffect 정의
 - [ ] 진행률 자동 계산 `((currentPage + pagesReadToday) / totalPages * 100)`
 - [ ] 완독 감지: 누적 페이지 >= totalPages 시 `ReadingStatus.FINISHED` 자동 전환
 - [ ] 완독 시 축하 다이얼로그 또는 애니메이션 표시

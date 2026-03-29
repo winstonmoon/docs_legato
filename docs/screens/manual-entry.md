@@ -178,7 +178,7 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
 
 ## TODO
 
-- [ ] `ManualBookEntryScreen` Composable 구현 (Dark / Light 공통)
+- [x] `ManualBookEntryScreen` Composable 구현 (Dark / Light 공통)
 - [ ] 표지 이미지 업로드 영역 구현
     - [ ] 점선 테두리 드롭존 + `add_a_photo` 아이콘
     - [ ] "Select Image" 버튼 탭 → 갤러리 / 카메라 선택 bottomsheet
@@ -193,6 +193,6 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
 - [ ] 필수 항목 미입력 시 인라인 에러 메시지 표시
 - [ ] "Add to Library" 버튼 (모든 필수 항목 입력 시 활성화)
 - [ ] Cancel / 뒤로가기 처리
-- [ ] `ManualBookEntryViewModel` / MVI State, Action, SideEffect 정의
+- [x] `ManualBookEntryViewModel` / MVI State, Action, SideEffect 정의
 - [ ] `BookRepository.upsertBook()` 연동 (genre, tags, notes, coverUri 포함)
 - [ ] Analytics: `book_added(source=manual)` 이벤트 로깅

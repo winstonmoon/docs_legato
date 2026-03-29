@@ -88,7 +88,7 @@ bookRepository.observeBooks(status = ReadingStatus.FINISHED)
 
 ## TODO
 
-- [ ] `LibraryScreen` Composable 구현 (Dark / Light 공통)
+- [x] `LibraryScreen` Composable 구현 (Dark / Light 공통)
 - [ ] 월별 섹션 헤더 구현 ("YYYY년 MM월" + 책 수 배지)
 - [ ] 도서 2열 그리드 구현
     - [ ] 책 표지 썸네일 (Coil KMP, aspect-ratio 2:3)
@@ -97,7 +97,7 @@ bookRepository.observeBooks(status = ReadingStatus.FINISHED)
     - [ ] 책 제목 (truncate) + 완료일 + 별점
 - [ ] Library 탭 활성화 시 pill 배경 강조 네비게이션 구현
 - [ ] 도서 카드 클릭 → Record Reading Progress 화면으로 이동
-- [ ] `LibraryViewModel` / MVI State, Action, SideEffect 정의
+- [x] `LibraryViewModel` / MVI State, Action, SideEffect 정의
 - [ ] `BookRepository.observeBooks(FINISHED)` → 월별 그룹화 변환 로직
 - [ ] 도서 없을 때 Empty State UI
 - [ ] AdMob 배너 광고 영역 (화면 하단, 비프리미엄 사용자)

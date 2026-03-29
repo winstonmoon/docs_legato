@@ -102,12 +102,12 @@ when (windowSizeClass.widthSizeClass) {
 
 ## TODO
 
-- [ ] `HomeScreen` Composable 구현 (Dark / Light 공통)
+- [x] `HomeScreen` Composable 구현 (Dark / Light 공통)
 - [ ] Current Read 카드 컴포넌트 구현
     - [ ] 책 표지 이미지 (Coil KMP로 로드)
     - [ ] 책 제목 / 저자 텍스트
     - [ ] Chapter X of Y 표시
-    - [ ] 진행률 `LinearProgressIndicator` (%) + 퍼센트 텍스트
+    - [x] 진행률 `LinearProgressIndicator` (%) + 퍼센트 텍스트
     - [ ] "Continue Reading" 버튼 → Record Reading Progress 화면으로 이동
 - [ ] 현재 읽는 책 없을 때 Empty State UI
 - [ ] Reading Stats 3열 카드 그리드 구현
@@ -116,8 +116,8 @@ when (windowSizeClass.widthSizeClass) {
     - [ ] Day Streak (`whatshot`, 주황 배경)
 - [ ] "From Your Library" 가로 스크롤 섹션 구현 + "View All" 버튼
 - [ ] AdMob 배너 광고 (하단 네비게이션 바 위에 고정, 비프리미엄 사용자)
-- [ ] `HomeViewModel` / MVI State, Action, SideEffect 정의
+- [x] `HomeViewModel` / MVI State, Action, SideEffect 정의
 - [ ] `StatsRepository.observeReadingStats()` 연동 (Books Read, Pages Read, Day Streak)
 - [ ] `BookRepository.observeRecentBooks(limit=5)` 연동
-- [ ] Bottom Navigation Bar 구현 (Home · Search · Library · Profile)
+- [x] Bottom Navigation Bar 구현 (Home · Search · Library · Profile)
 - [ ] Android: `WindowWidthSizeClass` 기반 Adaptive Navigation 구현
