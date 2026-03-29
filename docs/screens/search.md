@@ -101,7 +101,7 @@
 
 ## Explore Genres — 장르 칩
 
-### Google Books API 장르 지원 여부
+### 장르 목록 관리 방식: Supabase 원격 fetch
 
 !!! info "Google Books API에는 전용 장르 목록 엔드포인트가 없습니다"
     `/genres` 또는 `/categories` 전용 API는 제공되지 않습니다.
@@ -114,31 +114,93 @@
       &maxResults=20
     ```
 
-    각 책의 응답에는 `volumeInfo.categories[]` 필드가 포함되나, 앱 UI에 보여줄 장르 목록 자체는 **앱 내 하드코딩**이 현실적입니다.
+장르 목록 자체는 **Supabase `genres` 테이블**에서 원격으로 fetch한다.
+DB에서 장르를 추가·수정·비활성화(`is_active=false`)하면 앱 재배포 없이 즉시 반영된다.
 
-### 장르 목록 (하드코딩 + Google Books subject 매핑)
+**fetch 전략 (3단계 fallback):**
 
-| UI 칩 레이블 | Google Books `subject` 쿼리 |
-|---|---|
-| Fiction | `subject:Fiction` |
-| Philosophy | `subject:Philosophy` |
-| Sci-Fi | `subject:Science+Fiction` |
-| Classic Literature | `subject:Classics` |
-| Mystery | `subject:Mystery` |
-| Poetry | `subject:Poetry` |
-| History | `subject:History` |
-| Biography | `subject:Biography` |
+1. **원격 fetch** — Supabase PostgREST API (`GET /rest/v1/genres?is_active=eq.true&order=sort_order`)
+2. **로컬 캐시** — fetch 성공 시 DataStore에 JSON 저장, 실패 시 캐시 사용
+3. **하드코딩 fallback** — 캐시도 없을 경우 앱 내장 기본 목록 사용
+
+### Supabase `genres` 테이블 스키마
+
+| 컬럼 | 타입 | 설명 |
+|---|---|---|
+| `id` | int | PK |
+| `key` | text | Google Books `subject:` 쿼리 값 (예: `Fiction`) |
+| `emoji` | text | UI 칩 이모지 |
+| `label_en` | text | 영어 레이블 |
+| `label_ko` | text | 한국어 레이블 |
+| `label_ja` | text | 일본어 레이블 |
+| `label_zh` | text | 중국어 레이블 |
+| `is_active` | bool | false 시 앱에서 미표시 |
+| `sort_order` | int | 칩 정렬 순서 |
+
+### 초기 장르 목록 18개 (BISAC 기반)
+
+| EN | 한국어 | 日本語 | 中文 | Google Books `subject` 쿼리 |
+|---|---|---|---|---|
+| Fiction | 소설 | フィクション | 小说 | `subject:Fiction` |
+| Mystery | 미스터리 | ミステリー | 悬疑 | `subject:Mystery` |
+| Sci-Fi | SF | SF | 科幻 | `subject:Science Fiction` |
+| Fantasy | 판타지 | ファンタジー | 奇幻 | `subject:Fantasy` |
+| Romance | 로맨스 | ロマンス | 言情 | `subject:Romance` |
+| Thriller | 스릴러 | スリラー | 惊悚 | `subject:Thriller` |
+| Horror | 공포 | ホラー | 恐怖 | `subject:Horror` |
+| Biography | 전기 | 伝記 | 传记 | `subject:Biography & Autobiography` |
+| History | 역사 | 歴史 | 历史 | `subject:History` |
+| Self-Help | 자기계발 | 自己啓発 | 励志 | `subject:Self-Help` |
+| Business | 경제경영 | ビジネス | 商业 | `subject:Business & Economics` |
+| Psychology | 심리학 | 心理学 | 心理学 | `subject:Psychology` |
+| Science | 과학 | 科学 | 科学 | `subject:Science` |
+| Philosophy | 철학 | 哲学 | 哲学 | `subject:Philosophy` |
+| True Crime | 실화 범죄 | 実話犯罪 | 真实犯罪 | `subject:True Crime` |
+| Comics | 만화 | コミック | 漫画 | `subject:Comics & Graphic Novels` |
+| Young Adult | 청소년 | ヤングアダルト | 青少年 | `subject:Young Adult Fiction` |
+| Children's | 어린이 | 児童 | 儿童 | `subject:Juvenile Fiction` |
+
+!!! note "API key 수정 사항"
+    기존 하드코딩 대비 3개 key 수정 (BISAC 정확 일치로 검색 범위 확대):
+
+    | 기존 key | 변경 key |
+    |---|---|
+    | `Biography` | `Biography & Autobiography` |
+    | `Business` | `Business & Economics` |
+    | `Children` | `Juvenile Fiction` |
+
+### 아키텍처
 
 ```kotlin
-enum class BookGenre(val label: String, val subjectQuery: String) {
-    FICTION("Fiction", "subject:Fiction"),
-    PHILOSOPHY("Philosophy", "subject:Philosophy"),
-    SCI_FI("Sci-Fi", "subject:Science+Fiction"),
-    CLASSICS("Classic Literature", "subject:Classics"),
-    MYSTERY("Mystery", "subject:Mystery"),
-    POETRY("Poetry", "subject:Poetry"),
-    HISTORY("History", "subject:History"),
-    BIOGRAPHY("Biography", "subject:Biography"),
+// Genre 도메인 모델 (다국어 필드 포함)
+data class Genre(
+    val key: String,
+    val emoji: String,
+    val labelEn: String,
+    val labelKo: String,
+    val labelJa: String,
+    val labelZh: String,
+    val sortOrder: Int,
+)
+
+// 현재 언어 설정에 따라 displayName 자동 선택
+fun Genre.displayName(language: AppLanguage): String = when (language) {
+    AppLanguage.KOREAN  -> labelKo
+    AppLanguage.JAPANESE -> labelJa
+    AppLanguage.CHINESE -> labelZh
+    else                -> labelEn
+}
+```
+
+```kotlin
+// GenreRepository — fetch → 캐시 → fallback
+class GenreRepository(
+    private val apiService: GenreApiService,
+    private val dataStore: DataStore<Preferences>,
+) {
+    suspend fun fetchGenres(): List<Genre>  // 원격 fetch, 캐시 저장
+    fun getCachedGenres(): List<Genre>      // DataStore에서 읽기
+    fun getFallbackGenres(): List<Genre>    // 하드코딩 기본값
 }
 ```
 
@@ -341,7 +403,18 @@ if (addCount % 3 == 0) { // 3회마다 1번
     - [ ] `addSearch()` — 중복 제거 + 최대 10개 FIFO
     - [ ] `removeSearch()` — 개별 삭제
     - [ ] `clearAll()` — 전체 삭제
-- [x] `BookGenre` enum + `subjectQuery` 매핑
+- [x] `BookGenre` enum + `subjectQuery` 매핑 _(하드코딩 → Supabase 연동으로 전환 예정)_
+
+**Supabase genres 원격 fetch**
+- [ ] Supabase Dashboard에 `genres` 테이블 생성 (스키마는 위 참조)
+- [ ] 초기 장르 18개 데이터 삽입 (BISAC 기반, 4개 언어)
+- [ ] `Genre` 데이터 모델에 다국어 필드 추가 (`labelEn`, `labelKo`, `labelJa`, `labelZh`)
+- [ ] `GenreApiService` 구현 (Ktor로 Supabase PostgREST API 직접 호출)
+- [ ] `GenreRepository` 구현 (원격 fetch → DataStore JSON 캐시 → 하드코딩 fallback)
+- [ ] `SearchViewModel`에서 앱 시작 시 `GenreRepository.fetchGenres()` 호출
+- [ ] 현재 언어 설정(`AppPreferences.language`)에 따라 장르 `displayName` 자동 선택
+- [ ] Koin DI에 `GenreApiService`, `GenreRepository` 등록
+
 - [x] 장르 칩 탭 시 `q=subject:{genre}` 검색 실행
 - [x] `SearchViewModel` MVI 구현 (State, Action, SideEffect)
 - [ ] Google Books API debounce 처리 (300ms, 2자 이상)

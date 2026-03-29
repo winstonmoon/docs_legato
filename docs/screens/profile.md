@@ -38,7 +38,7 @@
 
 | 설정 항목 | 아이콘 색상 | 설명 |
 |---|---|---|
-| Language | 파랑 (`translate`) | 한국어 / 영어 / 일본어 |
+| Language | 파랑 (`translate`) | 한국어 / 영어 / 일본어 / 중국어 |
 | Dark Mode | 보라 (`dark_mode`) | `ThemeMode` 토글, DataStore 영속화 |
 | Notifications | 빨강 (`notifications`) | FCM 토픽 구독 / 해제 |
 | Account Details | 초록 (`person`) | 계정 정보 수정 |
@@ -135,3 +135,8 @@ supabaseClient.auth.signOut()
 - [ ] `PreferenceRepository` DataStore 연동 (테마, 언어 영속화)
 - [ ] Supabase Auth — 로그아웃 연동
 - [ ] Analytics: `screen_view` 이벤트 로깅
+
+**중국어(zh) 다국어 리소스 추가**
+- [ ] `composeResources/values-zh/strings.xml` 생성 (전체 문자열 중국어 번역)
+- [ ] `AppPreferences.Language` 또는 언어 태그 상수에 `"zh"` 추가
+- [ ] 언어 선택 UI에 中文 옵션 추가 (LanguageChange Action 연동)
