@@ -6,17 +6,23 @@
 
 ## UI 구성
 
+> Stitch 디자인: **Login Screen - Improved Guest Visibility (Dark)**
+
 | 구성 요소 | 설명 |
 |---|---|
-| 앱 아이콘 + 브랜드명 | `auto_stories` Material 아이콘 + "Legato" 텍스트 |
+| 배경 효과 | Radial gradient dot grid 패턴 + primary 색상 glow blur 장식 (좌상단 / 우하단) |
+| 앱 아이콘 + 브랜드명 | `auto_stories` Material 아이콘(72px) + "Legato" 텍스트 |
 | 환영 문구 | "Welcome back, reader!" |
 | 서브 타이틀 | "Continue your literary journey where you left off." |
-| Google 로그인 버튼 | `OutlinedButton` — Supabase Auth OAuth |
-| Apple 로그인 버튼 | `OutlinedButton` — iOS 전용 (expect/actual) |
+| Google 로그인 버튼 | `OutlinedButton` — SVG Google 로고 — Supabase Auth OAuth |
+| Apple 로그인 버튼 | `OutlinedButton` — SVG Apple 로고 — iOS 전용 (expect/actual) |
 | "or" 구분선 | `HorizontalDivider` + 중앙 텍스트 |
 | Login with Email 버튼 | `Button` (Primary, filled) → `EmailLoginScreen`으로 이동 |
 | 회원가입 링크 | "Don't have an account?" + **Sign Up** 텍스트 버튼 |
-| Continue as Guest | 하단 `TextButton` — 게스트 세션으로 홈 진입 |
+| Continue as Guest | primary 텍스트 컬러 + 밑줄(`TextDecoration.Underline`) — 게스트 세션으로 홈 진입 |
+
+!!! note "Continue as Guest 시각적 개선"
+    기존 무채색 `TextButton`에서 **primary 색상 + 밑줄** 스타일로 변경하여 게스트 로그인 옵션의 가시성을 개선.
 
 ---
 
@@ -132,14 +138,14 @@ if (session != null) navigateToHome() else navigateToLogin()
 ## TODO
 
 ### UI 구현 — LoginScreen
-- [ ] `LoginScreen` Composable 구현 (Dark / Light 공통)
+- [x] `LoginScreen` Composable 구현 (Dark / Light 공통)
 - [ ] `auto_stories` 아이콘 + "Legato" 브랜드 헤더 구현
 - [ ] 환영 문구 / 서브 타이틀 텍스트 구현
 - [ ] Google 소셜 로그인 버튼 UI 구현
 - [ ] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
 - [ ] "Login with Email" Primary 버튼 구현 → `EmailLoginScreen`으로 이동
-- [ ] Continue as Guest `TextButton` 구현
-- [ ] `LoginViewModel` / MVI State, Action, SideEffect 정의
+- [ ] Continue as Guest — primary 텍스트 컬러 + 밑줄 스타일로 구현
+- [x] `LoginViewModel` / MVI State, Action, SideEffect 정의
 - [ ] 로그인 성공 → Home 네비게이션 (백스택 제거)
 - [ ] 로딩 중 버튼 비활성화 처리
 

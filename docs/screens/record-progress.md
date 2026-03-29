@@ -6,7 +6,7 @@
 
 ## UI 구성
 
-> Stitch 디자인: **Record Reading Progress**
+> Stitch 디자인: **Record Reading Progress - Enhanced Input (Dark)**
 
 ### Stitch 스크린샷
 
@@ -16,7 +16,7 @@
 |---|---|
 | 책 표지 & 기본 정보 | 표지 이미지 (상단 진행률 바 오버레이 포함), 제목, 저자 |
 | 진행률 표시 | 표지 하단에 오버레이된 진행률 바 + "X% Complete" 텍스트 |
-| 오늘 읽은 페이지 스텝퍼 | `-` 버튼 · 숫자 입력 · `+` 버튼 (오늘 읽은 페이지 수) |
+| 오늘 읽은 페이지 스텝퍼 | `-10` · `-1`(`remove` 아이콘) · 숫자 직접 입력(text-6xl, 스피너 제거) · `+1`(`add` 아이콘) · `+10` 버튼 5구성 |
 | 총 진행 페이지 표시 | "Total pages: 142 / 218" 형식 |
 | Quick Notes | 텍스트 에어리어 + 이미지 첨부(`image`) / 태그 추가(`label`) 버튼 |
 | How was it? | 독서 무드 선택: Boring · Okay · Good · Great |
@@ -108,7 +108,7 @@ readingSessionRepository.finishSession(
 - [x] `RecordReadingProgressScreen` Composable 구현
 - [ ] 책 표지 헤더 (진행률 바 + "X% Complete" 오버레이 포함)
 - [ ] 책 제목 / 저자 텍스트
-- [ ] 오늘 읽은 페이지 수 스텝퍼 (`-` 버튼 · 숫자 입력 · `+` 버튼)
+- [ ] 오늘 읽은 페이지 수 스텝퍼 (`-10` · `-1` · 숫자 직접 입력 · `+1` · `+10` 5버튼 구조)
 - [ ] 총 진행 페이지 표시 ("Total pages: X / Y")
 - [ ] Quick Notes 텍스트 에어리어 + 이미지/태그 첨부 버튼
 - [ ] "How was it?" 무드 선택 버튼 4개 (Boring / Okay / Good / Great)
