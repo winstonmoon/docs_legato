@@ -8,6 +8,9 @@
 
 ```
 ┌── 로그인 (Login)
+│       └── 이메일 로그인 (Email Login)
+├── 회원가입 (Sign Up)
+│       └── 온보딩 (Onboarding: Personalization)
 └── 메인 (Bottom Navigation)
     ├── 🏠 홈 대시보드 (Home Dashboard)
     ├── 📚 도서관 / 히스토리 (Library History)
@@ -27,6 +30,8 @@
 | 화면 | Stitch | 다크 | 라이트 | 구현 |
 |---|---|---|---|---|
 | [로그인](login.md) | ✅ | ✅ | ✅ | ⬜ |
+| [회원가입](signup.md) | ✅ | ⬜ | ✅ | ⬜ |
+| [온보딩](onboarding.md) | ✅ | ⬜ | ✅ | ⬜ |
 | [홈 대시보드](home.md) | ✅ | ✅ | ✅ | ⬜ |
 | [도서관 / 히스토리](library.md) | ✅ | ✅ | ✅ | ⬜ |
 | [검색 & 추가](search.md) | ✅ | ✅ | ✅ | ⬜ |

@@ -1,6 +1,6 @@
 # 로그인 (Login Screen)
 
-[:fontawesome-solid-arrow-up-right-from-square: Stitch에서 보기](https://stitch.withgoogle.com/projects/9973353658769610659){ target="_blank" .md-button }
+[:fontawesome-solid-arrow-up-right-from-square: Stitch에서 보기](https://stitch.withgoogle.com/projects/9973353658769610659?node-id=47ad34a9fd2243bf910b17b4bb1d0b2a){ target="_blank" .md-button }
 
 ---
 
@@ -8,35 +8,77 @@
 
 | 구성 요소 | 설명 |
 |---|---|
-| Smiling Book 로고 | `composeResources/drawable`에 SVG로 추가 |
-| 앱 이름 & 슬로건 | "Legato — Connected Reading" |
-| Google 로그인 버튼 | Supabase Auth OAuth |
-| Apple 로그인 버튼 | iOS 전용 (expect/actual) |
-| 이메일 로그인 폼 | 이메일 + 비밀번호 입력 |
-| 회원가입 안내 | 하단 텍스트 링크 |
+| 앱 아이콘 + 브랜드명 | `auto_stories` Material 아이콘 + "Legato" 텍스트 |
+| 환영 문구 | "Welcome back, reader!" |
+| 서브 타이틀 | "Continue your literary journey where you left off." |
+| Google 로그인 버튼 | `OutlinedButton` — Supabase Auth OAuth |
+| Apple 로그인 버튼 | `OutlinedButton` — iOS 전용 (expect/actual) |
+| "or" 구분선 | `HorizontalDivider` + 중앙 텍스트 |
+| Login with Email 버튼 | `Button` (Primary, filled) → `EmailLoginScreen`으로 이동 |
+| 회원가입 링크 | "Don't have an account?" + **Sign Up** 텍스트 버튼 |
+| Continue as Guest | 하단 `TextButton` — 게스트 세션으로 홈 진입 |
+
+---
+
+## 이메일 로그인 화면 (Email Login Screen)
+
+로그인 화면에서 **Login with Email** 버튼을 누르면 별도 `EmailLoginScreen`으로 이동한다.
+
+| 구성 요소 | 설명 |
+|---|---|
+| 뒤로가기 버튼 | `TopAppBar` 네비게이션 아이콘 → Login 화면으로 복귀 |
+| 이메일 입력 | `OutlinedTextField` (keyboardType = Email) |
+| 비밀번호 입력 | `OutlinedTextField` + 비밀번호 가시성 토글 |
+| Log In 버튼 | `Button` (Primary, filled) — 로그인 실행 |
 
 ---
 
 ## MVI 구조
 
 ```kotlin
-// State
+// LoginScreen State
 data class LoginUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
 )
 
-// Action
+// LoginScreen Action
 sealed interface LoginAction {
-    data class GoogleLoginClick : LoginAction
-    data class AppleLoginClick : LoginAction
-    data class EmailLoginClick(val email: String, val password: String) : LoginAction
+    data object GoogleLoginClick : LoginAction
+    data object AppleLoginClick : LoginAction
+    data object EmailLoginClick : LoginAction       // → EmailLoginScreen 이동
+    data object GuestLoginClick : LoginAction       // → 게스트 세션으로 Home 이동
+    data object SignUpClick : LoginAction
 }
 
-// SideEffect
+// LoginScreen SideEffect
 sealed interface LoginSideEffect {
+    data object NavigateToEmailLogin : LoginSideEffect
     data object NavigateToHome : LoginSideEffect
+    data object NavigateToSignUp : LoginSideEffect
     data class ShowError(val message: String) : LoginSideEffect
+}
+
+// EmailLoginScreen State
+data class EmailLoginUiState(
+    val email: String = "",
+    val password: String = "",
+    val emailError: String? = null,
+    val passwordError: String? = null,
+    val isLoading: Boolean = false,
+)
+
+// EmailLoginScreen Action
+sealed interface EmailLoginAction {
+    data class EmailChange(val value: String) : EmailLoginAction
+    data class PasswordChange(val value: String) : EmailLoginAction
+    data object LoginClick : EmailLoginAction
+}
+
+// EmailLoginScreen SideEffect
+sealed interface EmailLoginSideEffect {
+    data object NavigateToHome : EmailLoginSideEffect
+    data class ShowError(val message: String) : EmailLoginSideEffect
 }
 ```
 
@@ -45,8 +87,17 @@ sealed interface LoginSideEffect {
 ## 네비게이션
 
 ```
-로그인 성공 → Home (백스택 제거)
-로그인 실패 → 에러 Snackbar 표시
+Login with Email 클릭 → EmailLoginScreen
+Google / Apple 로그인 성공 → Home (백스택 제거)
+Continue as Guest → Home (백스택 제거, 게스트 세션)
+Sign Up 클릭 → SignUpScreen
+EmailLoginScreen: 로그인 성공 → Home (백스택 제거)
+EmailLoginScreen: 실패 → 에러 Snackbar 표시
+```
+
+**AppRoute 추가:**
+```kotlin
+@Serializable data object EmailLogin : AppRoute
 ```
 
 ---
@@ -60,11 +111,14 @@ supabaseClient.auth.signInWith(Google)
 // Apple OAuth (iOS)
 supabaseClient.auth.signInWith(Apple)
 
-// 이메일/비밀번호
+// 이메일/비밀번호 (EmailLoginScreen)
 supabaseClient.auth.signInWith(Email) {
     this.email = email
     this.password = password
 }
+
+// 게스트 (Anonymous Auth)
+supabaseClient.auth.signInAnonymously()
 ```
 
 앱 시작 시 세션 자동 복원:
@@ -77,16 +131,26 @@ if (session != null) navigateToHome() else navigateToLogin()
 
 ## TODO
 
-### UI 구현
+### UI 구현 — LoginScreen
 - [ ] `LoginScreen` Composable 구현 (Dark / Light 공통)
-- [ ] Smiling Book SVG 로고 에셋 추가 (`composeResources/drawable`)
+- [ ] `auto_stories` 아이콘 + "Legato" 브랜드 헤더 구현
+- [ ] 환영 문구 / 서브 타이틀 텍스트 구현
 - [ ] Google 소셜 로그인 버튼 UI 구현
 - [ ] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
-- [ ] 이메일 로그인 폼 UI 구현 (이메일 입력 + 비밀번호 입력)
+- [ ] "Login with Email" Primary 버튼 구현 → `EmailLoginScreen`으로 이동
+- [ ] Continue as Guest `TextButton` 구현
 - [ ] `LoginViewModel` / MVI State, Action, SideEffect 정의
 - [ ] 로그인 성공 → Home 네비게이션 (백스택 제거)
-- [ ] 로그인 실패 시 에러 메시지 표시 (Snackbar)
 - [ ] 로딩 중 버튼 비활성화 처리
+
+### UI 구현 — EmailLoginScreen
+- [ ] `EmailLoginScreen` Composable 구현
+- [ ] 이메일 + 비밀번호 입력 폼 UI 구현
+- [ ] 비밀번호 가시성 토글 구현
+- [ ] `EmailLoginViewModel` / MVI State, Action, SideEffect 정의
+- [ ] 로그인 성공 → Home 네비게이션 (백스택 제거)
+- [ ] 로그인 실패 시 에러 메시지 표시 (Snackbar)
+- [ ] `AppRoute.EmailLogin` 라우트 추가
 
 ### Google 로그인 외부 API 연동
 - [ ] Google Cloud Console에서 OAuth 2.0 클라이언트 ID 생성 (Android / iOS 각각)
@@ -105,6 +169,12 @@ if (session != null) navigateToHome() else navigateToLogin()
 - [ ] iOS: Xcode 프로젝트에 "Sign in with Apple" Entitlement 추가
 - [ ] Supabase Dashboard에서 Apple OAuth provider 활성화 및 Services ID / Key ID / `.p8` 등록
 - [ ] Supabase Auth — Apple OAuth 연동 (`supabaseClient.auth.signInWith(Apple)`) — iOS 전용 expect/actual
+
+### 게스트 로그인
+- [ ] Supabase Anonymous Auth 활성화 (Dashboard → Auth → Providers → Anonymous)
+- [ ] `GuestLoginClick` Action 처리 — `supabaseClient.auth.signInAnonymously()`
+- [ ] 게스트 세션 → Home 네비게이션 (백스택 제거)
+- [ ] 게스트 계정 전환 UI (Profile 화면에서 정식 계정으로 업그레이드 유도)
 
 ### 공통 인증 로직
 - [ ] Supabase Auth — 이메일/비밀번호 로그인 연동
