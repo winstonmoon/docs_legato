@@ -49,9 +49,18 @@
 | 구성 요소 | 설명 |
 |---|---|
 | 검색 입력 필드 | 뒤로가기 버튼 + 검색 입력창 |
-| 필터 바 | Genre · Author · Rating · Year 드롭다운 칩 (가로 스크롤) |
+| 정렬 칩 | **관련도** · **최신순** (Google Books API 지원 2종) |
 | 검색 결과 리스트 | 책 표지, 제목, 저자, 별점(★), 출판 연도, Add/Added 버튼 |
 | 하단 내비게이션 | Home · Search · Library · Profile |
+
+!!! note "정렬 옵션 — Google Books API 제약"
+    Google Books API의 `orderBy` 파라미터는 `relevance`(기본값)와 `newest` **2종만** 공식 지원합니다.
+    `제목순` 정렬은 API 레벨에서 지원되지 않으므로 UI에서 제거되었습니다.
+
+    | 칩 | `orderBy` 값 | API 지원 |
+    |---|---|---|
+    | 관련도 | _(파라미터 생략)_ | ✅ |
+    | 최신순 | `newest` | ✅ |
 
 ### Stitch 스크린샷
 
@@ -316,25 +325,25 @@ if (addCount % 3 == 0) { // 3회마다 1번
 
 ## TODO
 
-- [ ] `SearchScreen` — Initial State Composable 구현 (Light / Dark)
-    - [ ] 검색 바 오른쪽에 `barcode_scanner` 아이콘 배치 → ISBN 바코드 스캔 연동
+- [x] `SearchScreen` — Initial State Composable 구현 (Light / Dark)
+    - [x] 검색 바 오른쪽에 `barcode_scanner` 아이콘 배치 → ISBN 바코드 스캔 연동
     - [ ] Hero 섹션 (마스코트 이미지 + "Find your next story" 텍스트)
-    - [ ] Recent Searches 섹션 (도서 카드 + `history` 아이콘 + "Clear all")
-    - [ ] Explore Genres 섹션 (가로 스크롤 칩 목록, `BookGenre` enum 기반)
-- [ ] `SearchScreen` — Results State Composable 구현
-    - [ ] 필터 바 (Genre · Author · Rating · Year 드롭다운)
-    - [ ] 검색 결과 아이템 (표지, 제목, 저자, 별점, 출판 연도, Add/Added 버튼)
-- [ ] `SearchScreen` — **No Results State** Composable 구현
+    - [x] Recent Searches 섹션 (도서 카드 + `history` 아이콘 + "Clear all")
+    - [x] Explore Genres 섹션 (가로 스크롤 칩 목록, `BookGenre` enum 기반)
+- [x] `SearchScreen` — Results State Composable 구현
+    - [x] 정렬 칩: 관련도 · 최신순 (Google Books API 지원 2종, `SortOrder` enum 기반)
+    - [x] 검색 결과 아이템 (표지, 제목, 저자, 별점, 출판 연도, Add/Added 버튼)
+- [x] `SearchScreen` — **No Results State** Composable 구현
     - [ ] 마스코트 일러스트 (물음표 붙은 책 캐릭터)
-    - [ ] "직접 입력하기" 버튼 → `ManualEntryClick` 액션 발행 → `ManualBookEntryScreen` 이동
+    - [x] "직접 입력하기" 버튼 → `ManualEntryClick` 액션 발행 → `ManualBookEntryScreen` 이동
     - [ ] "Clear search history" 링크
 - [ ] `RecentSearchRepository` DataStore 구현
     - [ ] `addSearch()` — 중복 제거 + 최대 10개 FIFO
     - [ ] `removeSearch()` — 개별 삭제
     - [ ] `clearAll()` — 전체 삭제
-- [ ] `BookGenre` enum + `subjectQuery` 매핑
-- [ ] 장르 칩 탭 시 `q=subject:{genre}` 검색 실행
-- [ ] `SearchViewModel` MVI 구현 (State, Action, SideEffect)
+- [x] `BookGenre` enum + `subjectQuery` 매핑
+- [x] 장르 칩 탭 시 `q=subject:{genre}` 검색 실행
+- [x] `SearchViewModel` MVI 구현 (State, Action, SideEffect)
 - [ ] Google Books API debounce 처리 (300ms, 2자 이상)
 - [ ] 도서 추가 완료 시 `BookRepository.upsertBook()` 연동
 - [ ] 도서 추가 완료 후 최근 검색어 자동 저장
