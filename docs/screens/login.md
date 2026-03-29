@@ -19,10 +19,12 @@
 | "or" 구분선 | `HorizontalDivider` + 중앙 텍스트 |
 | Login with Email 버튼 | `Button` (Primary, filled) → `EmailLoginScreen`으로 이동 |
 | 회원가입 링크 | "Don't have an account?" + **Sign Up** 텍스트 버튼 |
-| Continue as Guest | primary 텍스트 컬러 + 밑줄(`TextDecoration.Underline`) — 게스트 세션으로 홈 진입 |
+| Continue as Guest | primary 텍스트 컬러 + 밑줄(`TextDecoration.Underline`) — 클릭 시 데이터 보호 안내 다이얼로그 표시 |
+| 게스트 데이터 보호 안내 다이얼로그 | `AlertDialog` — "내 독서 기록, 이 기기에만 있어요" / [지금 로그인하기] [나중에] |
 
-!!! note "Continue as Guest 시각적 개선"
-    기존 무채색 `TextButton`에서 **primary 색상 + 밑줄** 스타일로 변경하여 게스트 로그인 옵션의 가시성을 개선.
+!!! note "Continue as Guest 다이얼로그 플로우"
+    "Continue as Guest" 클릭 시 바로 홈으로 이동하지 않고 **데이터 보호 안내 다이얼로그**를 먼저 표시한다.
+    [나중에] → `signInAnonymously()` 후 Home 이동 / [지금 로그인하기] → 다이얼로그 닫기 (로그인 화면 유지)
 
 ---
 
@@ -52,8 +54,10 @@ data class LoginUiState(
 sealed interface LoginAction {
     data object GoogleLoginClick : LoginAction
     data object AppleLoginClick : LoginAction
-    data object EmailLoginClick : LoginAction       // → EmailLoginScreen 이동
-    data object GuestLoginClick : LoginAction       // → 게스트 세션으로 Home 이동
+    data object EmailLoginClick : LoginAction           // → EmailLoginScreen 이동
+    data object GuestLoginClick : LoginAction           // → 데이터 보호 안내 다이얼로그 표시
+    data object GuestWarningConfirmLater : LoginAction  // 다이얼로그 [나중에] → signInAnonymously() 후 Home
+    data object GuestWarningLoginNow : LoginAction      // 다이얼로그 [지금 로그인하기] → 다이얼로그 닫기
     data object SignUpClick : LoginAction
 }
 
@@ -62,6 +66,7 @@ sealed interface LoginSideEffect {
     data object NavigateToEmailLogin : LoginSideEffect
     data object NavigateToHome : LoginSideEffect
     data object NavigateToSignUp : LoginSideEffect
+    data object ShowGuestWarningDialog : LoginSideEffect
     data class ShowError(val message: String) : LoginSideEffect
 }
 
@@ -95,7 +100,9 @@ sealed interface EmailLoginSideEffect {
 ```
 Login with Email 클릭 → EmailLoginScreen
 Google / Apple 로그인 성공 → Home (백스택 제거)
-Continue as Guest → Home (백스택 제거, 게스트 세션)
+Continue as Guest 클릭 → 데이터 보호 안내 다이얼로그 표시
+  ├─ [나중에] → signInAnonymously() → Home (백스택 제거)
+  └─ [지금 로그인하기] → 다이얼로그 닫기 (로그인 화면 유지)
 Sign Up 클릭 → SignUpScreen
 EmailLoginScreen: 로그인 성공 → Home (백스택 제거)
 EmailLoginScreen: 실패 → 에러 Snackbar 표시
@@ -178,8 +185,11 @@ if (session != null) navigateToHome() else navigateToLogin()
 
 ### 게스트 로그인
 - [ ] Supabase Anonymous Auth 활성화 (Dashboard → Auth → Providers → Anonymous)
-- [ ] `GuestLoginClick` Action 처리 — `supabaseClient.auth.signInAnonymously()`
-- [ ] 게스트 세션 → Home 네비게이션 (백스택 제거)
+- [ ] `GuestLoginClick` Action 처리 → `ShowGuestWarningDialog` SideEffect 발행
+- [ ] 데이터 보호 안내 다이얼로그 Composable 구현 (`AlertDialog`)
+  - 제목 "내 독서 기록, 이 기기에만 있어요" + 안내 문구 + [지금 로그인하기] / [나중에] 버튼
+- [ ] 다이얼로그 [나중에] 클릭 → `GuestWarningConfirmLater` Action → `supabaseClient.auth.signInAnonymously()` 후 Home 이동 (백스택 제거)
+- [ ] 다이얼로그 [지금 로그인하기] 클릭 → `GuestWarningLoginNow` Action → 다이얼로그 닫기 (로그인 화면 유지)
 - [ ] 게스트 계정 전환 UI (Profile 화면에서 정식 계정으로 업그레이드 유도)
 
 ### 공통 인증 로직
