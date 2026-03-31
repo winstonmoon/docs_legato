@@ -43,7 +43,7 @@
 | Notifications | 빨강 (`notifications`) | FCM 토픽 구독 / 해제 |
 | Account Details | 초록 (`person`) | 계정 정보 수정 |
 | Privacy & Security | 슬레이트 (`lock`) | 보안 설정 |
-| Sign Out | (버튼) | Supabase Auth signOut → 로그인 화면 (**로그인 상태에서만 표시**) |
+| Sign Out | (버튼) | Supabase Auth signOut → 로그인 화면 (**`isLoggedIn == true`일 때만 표시**) |
 
 ### 앱 정보
 
@@ -65,7 +65,7 @@ data class ProfileUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val notificationsEnabled: Boolean = false,
     val language: String = "ko",
-    val isGuest: Boolean = false,    // true이면 Sign Out 버튼 숨김
+    val isLoggedIn: Boolean = false,  // false이면 Sign Out 버튼 숨김
     val isLoading: Boolean = false,
 )
 
@@ -128,7 +128,7 @@ supabaseClient.auth.signOut()
     - [ ] Notifications 토글 (FCM 토픽 구독 / 해제)
     - [ ] Account Details 항목 (`arrow_forward_ios`)
     - [ ] Privacy & Security 항목 (`arrow_forward_ios`)
-    - [ ] Sign Out 버튼 (빨강 border, **`isGuest == false`일 때만 표시**)
+    - [ ] Sign Out 버튼 (빨강 border, **`isLoggedIn == true`일 때만 표시**)
 - [ ] AdMob 배너 하단 고정 (Sticky)
 - [ ] 앱 버전 정보 표시 (`BuildConfig.VERSION_NAME`)
 - [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의
