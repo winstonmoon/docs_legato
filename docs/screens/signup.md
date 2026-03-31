@@ -172,7 +172,7 @@ create table profiles (
 - [x] `SignUpScreen` Composable 구현 (Light / Dark)
 - [x] 닉네임 + 이메일 + 비밀번호 입력 폼
 - [x] 출생연도 숫자 입력 필드 (keyboardType = Number, 선택)
-- [x] 직업군 텍스트 입력 필드 구현 (직업군; ExposedDropdownMenu 방식으로 전환 미완)
+- [ ] 직업군 `ExposedDropdownMenu` 전환 (현재 자유 입력 TextField → 3종 드롭다운: 학생 / 직장인 / 기타)
 - [x] 비밀번호 가시성 토글
 - [x] Google / Apple 소셜 가입 버튼 (UI만; Supabase 미연동)
 - [x] `SignUpViewModel` / MVI State, Action, SideEffect 정의

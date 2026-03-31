@@ -188,7 +188,7 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
     - [x] 저자 (필수, 유효성 검사)
     - [x] 전체 페이지 수 (필수, 숫자 키보드)
     - [x] 장르 드롭다운 (`DropdownMenu` + 퀵셀렉트 `AssistChip` 구현됨; `BookGenre` enum 전환 미완)
-    - [ ] 장르 태그 멀티 선택 칩 (Classic · Drama · Romance · Historical) — 현재 단일 장르 선택만 구현
+    - [ ] 장르 태그 **Multi-select** 칩 (Classic · Drama · Romance · Historical) — 현재 단일 선택만 구현, 복수 선택으로 수정 필요
     - [x] Notes 텍스트 에어리어 (선택, 3줄)
 - [x] 필수 항목 미입력 시 인라인 에러 메시지 표시
 - [x] "Add to Library" 버튼 (`isSubmitEnabled` 조건부 활성화)

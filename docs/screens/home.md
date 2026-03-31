@@ -18,6 +18,7 @@
 
 | 구성 요소 | 설명 |
 |---|---|
+| Current Read 카드 헤더 | "Currently Reading" 섹션 타이틀 + **"View All" 버튼** (Library 화면으로 이동) |
 | Current Read 카드 | 표지 이미지, 제목/저자, Chapter X of Y, 진행률 바(%), "Continue Reading" 버튼 |
 | 현재 읽는 책 없음 | Empty State UI |
 | Reading Stats | 3열 카드 그리드: **Books Read** / **Pages Read** / **Day Streak** |
@@ -114,7 +115,8 @@ when (windowSizeClass.widthSizeClass) {
     - [x] Books Read (`menu_book`, 파랑 배경)
     - [x] Pages Read (`description`, 파랑 배경)
     - [x] Day Streak (`whatshot`, 주황 배경) — 현재 값 하드코딩 0, 실 계산 로직 미구현
-- [x] "From Your Library" 가로 스크롤 섹션 구현 + "View All" 버튼
+- [x] "Currently Reading" 섹션 헤더 + **"View All" 버튼** (헤더 우측, Library 이동) 구현
+- [x] "From Your Library" 가로 스크롤 섹션 구현
 - [ ] AdMob 배너 광고 (하단 네비게이션 바 위에 고정, 비프리미엄 사용자)
 - [x] `HomeViewModel` / MVI State, Action, SideEffect 정의
 - [x] `LocalBookRepository.observeReadingStats()` 연동 (Books Read, Pages Read 연동; Day Streak은 0 하드코딩)

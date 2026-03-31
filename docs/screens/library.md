@@ -96,7 +96,7 @@ bookRepository.observeBooks(status = ReadingStatus.FINISHED)
     - [x] `DONE` 완독 배지 (초록 pill, 우측 상단 오버레이) — `DoneBadge` 컴포넌트 구현됨
     - [x] 책 제목 (truncate) + 완료일 + 별점
 - [ ] Library 탭 활성화 시 pill 배경 강조 네비게이션 구현
-- [ ] 도서 카드 클릭 → Record Reading Progress 화면으로 이동
+- [ ] 도서 카드 클릭 → **Record Reading Progress** 화면으로 이동 (현재 구현은 BookDetail — RecordProgress로 수정 필요)
 - [x] `LibraryViewModel` / MVI State, Action, SideEffect 정의
 - [x] `LocalBookRepository.observeFinishedBooks()` → 월별 그룹화 변환 로직 (`toMonthLabel()`)
 - [x] 도서 없을 때 Empty State UI — `LibraryEmptyState` 컴포넌트 구현됨
