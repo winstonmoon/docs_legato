@@ -169,19 +169,19 @@ create table profiles (
 ## TODO
 
 ### UI 구현
-- [ ] `SignUpScreen` Composable 구현 (Light / Dark)
-- [ ] 닉네임 + 이메일 + 비밀번호 입력 폼
-- [ ] 출생연도 숫자 입력 필드 (keyboardType = Number, 선택)
-- [ ] 직업군 드롭다운 선택 UI (학생 / 직장인 / 기타, 선택)
-- [ ] 비밀번호 가시성 토글
-- [ ] Google / Apple 소셜 가입 버튼
-- [ ] `SignUpViewModel` / MVI State, Action, SideEffect 정의
-- [ ] 이메일 유효성 / 비밀번호 최소 길이 검사
-- [ ] 가입 성공 → OnboardingScreen 네비게이션
-- [ ] 이메일 중복 에러 처리 (Snackbar)
+- [x] `SignUpScreen` Composable 구현 (Light / Dark)
+- [x] 닉네임 + 이메일 + 비밀번호 입력 폼
+- [x] 출생연도 숫자 입력 필드 (keyboardType = Number, 선택)
+- [x] 직업군 텍스트 입력 필드 구현 (직업군; ExposedDropdownMenu 방식으로 전환 미완)
+- [x] 비밀번호 가시성 토글
+- [x] Google / Apple 소셜 가입 버튼 (UI만; Supabase 미연동)
+- [x] `SignUpViewModel` / MVI State, Action, SideEffect 정의
+- [x] 이메일 유효성 / 비밀번호 최소 길이 검사
+- [x] 가입 성공 → OnboardingScreen 네비게이션 (preferences 기반; Supabase 미연동)
+- [ ] 이메일 중복 에러 처리 (Snackbar) — Supabase 연동 후 가능
 
 ### 온보딩 플로우
-- [ ] `OnboardingScreen` Composable 구현 (→ [온보딩 화면 스펙](onboarding.md) 참고)
+- [x] `OnboardingScreen` Composable 구현 (→ [온보딩 화면 스펙](onboarding.md) 참고)
 
 ### Supabase 연동
 - [ ] `profiles` 테이블 생성 (위 스키마 참고)

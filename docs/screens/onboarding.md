@@ -88,13 +88,13 @@ supabaseClient.from("profiles").upsert(
 ## TODO
 
 ### UI 구현
-- [ ] `OnboardingScreen` Composable 구현
-- [ ] 월간 목표 슬라이더 (1~15, Casual / Avid / Bibliophile 단계 레이블 표시)
-- [ ] 장르 선택 그리드 (멀티 선택 칩, 1~3개 제한)
-- [ ] Get Started `Button` 구현
-- [ ] 건너뛰기 `TextButton` 구현
-- [ ] `OnboardingViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `AppRoute.Onboarding` 라우트 추가
+- [x] `OnboardingScreen` Composable 구현
+- [x] 월간 목표 슬라이더 (1~15, Casual / Avid / Bibliophile 단계 레이블 표시)
+- [x] 장르 선택 그리드 (멀티 선택 칩, 1~3개 제한)
+- [x] Get Started `Button` 구현
+- [x] 건너뛰기 `TextButton` 구현
+- [x] `OnboardingViewModel` / MVI State, Action, SideEffect 정의
+- [x] `AppRoute.Onboarding` 라우트 추가
 
 ### Supabase 연동
 - [ ] `profiles` 테이블 `monthly_goal`, `genre_prefs` 컬럼 upsert

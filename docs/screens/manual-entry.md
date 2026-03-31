@@ -179,20 +179,20 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
 ## TODO
 
 - [x] `ManualBookEntryScreen` Composable 구현 (Dark / Light 공통)
-- [ ] 표지 이미지 업로드 영역 구현
+- [ ] 표지 이미지 업로드 영역 구현 (미착수)
     - [ ] 점선 테두리 드롭존 + `add_a_photo` 아이콘
     - [ ] "Select Image" 버튼 탭 → 갤러리 / 카메라 선택 bottomsheet
     - [ ] 선택 후 표지 미리보기 표시
-- [ ] 입력 폼 필드 구현
-    - [ ] 책 제목 (필수, 유효성 검사)
-    - [ ] 저자 (필수, 유효성 검사)
-    - [ ] 전체 페이지 수 (필수, 숫자 키보드)
-    - [ ] 장르 드롭다운 (Fiction / Non-Fiction / Mystery / Fantasy / Sci-Fi / Biography)
-    - [ ] 장르 태그 퀵셀렉트 칩 (Classic · Drama · Romance · Historical, 멀티 선택)
-    - [ ] Notes 텍스트 에어리어 (선택, 3줄)
-- [ ] 필수 항목 미입력 시 인라인 에러 메시지 표시
-- [ ] "Add to Library" 버튼 (모든 필수 항목 입력 시 활성화)
-- [ ] Cancel / 뒤로가기 처리
+- [x] 입력 폼 필드 구현
+    - [x] 책 제목 (필수, 유효성 검사)
+    - [x] 저자 (필수, 유효성 검사)
+    - [x] 전체 페이지 수 (필수, 숫자 키보드)
+    - [x] 장르 드롭다운 (`DropdownMenu` + 퀵셀렉트 `AssistChip` 구현됨; `BookGenre` enum 전환 미완)
+    - [ ] 장르 태그 멀티 선택 칩 (Classic · Drama · Romance · Historical) — 현재 단일 장르 선택만 구현
+    - [x] Notes 텍스트 에어리어 (선택, 3줄)
+- [x] 필수 항목 미입력 시 인라인 에러 메시지 표시
+- [x] "Add to Library" 버튼 (`isSubmitEnabled` 조건부 활성화)
+- [x] Cancel / 뒤로가기 처리
 - [x] `ManualBookEntryViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `BookRepository.upsertBook()` 연동 (genre, tags, notes, coverUri 포함)
+- [x] `BookRepository.insertBook()` 연동 (genre, notes 포함; tags·coverUri 미구현)
 - [ ] Analytics: `book_added(source=manual)` 이벤트 로깅

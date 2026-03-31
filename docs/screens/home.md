@@ -103,21 +103,21 @@ when (windowSizeClass.widthSizeClass) {
 ## TODO
 
 - [x] `HomeScreen` Composable 구현 (Dark / Light 공통)
-- [ ] Current Read 카드 컴포넌트 구현
-    - [ ] 책 표지 이미지 (Coil KMP로 로드)
-    - [ ] 책 제목 / 저자 텍스트
+- [x] Current Read 카드 컴포넌트 구현
+    - [x] 책 표지 이미지 (Coil KMP `AsyncImage` 로드)
+    - [x] 책 제목 / 저자 텍스트
     - [ ] Chapter X of Y 표시
     - [x] 진행률 `LinearProgressIndicator` (%) + 퍼센트 텍스트
-    - [ ] "Continue Reading" 버튼 → Record Reading Progress 화면으로 이동
-- [ ] 현재 읽는 책 없을 때 Empty State UI
-- [ ] Reading Stats 3열 카드 그리드 구현
-    - [ ] Books Read (`menu_book`, 파랑 배경)
-    - [ ] Pages Read (`description`, 파랑 배경)
-    - [ ] Day Streak (`whatshot`, 주황 배경)
-- [ ] "From Your Library" 가로 스크롤 섹션 구현 + "View All" 버튼
+    - [x] "Continue Reading" 버튼 → Record Reading Progress 화면으로 이동
+- [x] 현재 읽는 책 없을 때 Empty State UI
+- [x] Reading Stats 3열 카드 그리드 구현
+    - [x] Books Read (`menu_book`, 파랑 배경)
+    - [x] Pages Read (`description`, 파랑 배경)
+    - [x] Day Streak (`whatshot`, 주황 배경) — 현재 값 하드코딩 0, 실 계산 로직 미구현
+- [x] "From Your Library" 가로 스크롤 섹션 구현 + "View All" 버튼
 - [ ] AdMob 배너 광고 (하단 네비게이션 바 위에 고정, 비프리미엄 사용자)
 - [x] `HomeViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `StatsRepository.observeReadingStats()` 연동 (Books Read, Pages Read, Day Streak)
-- [ ] `BookRepository.observeRecentBooks(limit=5)` 연동
+- [x] `LocalBookRepository.observeReadingStats()` 연동 (Books Read, Pages Read 연동; Day Streak은 0 하드코딩)
+- [x] `LocalBookRepository.observeAllBooks().take(5)` 연동 (`observeRecentBooks()` 아닌 전체 목록 상위 5개)
 - [x] Bottom Navigation Bar 구현 (Home · Search · Library · Profile)
 - [ ] Android: `WindowWidthSizeClass` 기반 Adaptive Navigation 구현

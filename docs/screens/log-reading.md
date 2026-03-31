@@ -83,13 +83,13 @@ bookRepository.upsertBook(
 ## TODO
 
 - [x] `LogReadingScreen` Composable 구현 (Light 우선, Dark 추가)
-- [ ] 책 정보 헤더 구현 (표지 이미지, 제목, 저자)
-- [ ] 현재 페이지 입력 필드 (숫자 키보드, 전체 페이지 수 초과 방지)
+- [x] 책 정보 헤더 구현 (표지 이미지 `AsyncImage`, 제목, 저자)
+- [x] 현재 페이지 입력 필드 (숫자 키보드, 전체 페이지 수 초과 방지)
 - [x] 진행률 `LinearProgressIndicator` (페이지 입력 시 실시간 업데이트)
-- [ ] DatePicker 구현 (KMP 공용 또는 expect/actual)
-- [ ] 메모 / 노트 입력 TextArea (선택)
-- [ ] "Save" 버튼
+- [ ] DatePicker 구현 (현재 `OutlinedTextField` 직접 입력; KMP DatePickerDialog 미구현)
+- [x] 메모 / 노트 입력 TextArea (선택)
+- [x] "Save" 버튼
 - [x] `LogReadingViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `ReadingSessionRepository.finishSession()` 연동
-- [ ] 저장 완료 후 Home / Library 데이터 자동 갱신
+- [x] `LocalReadingSessionRepository.insertSession()` 연동
+- [ ] 저장 완료 후 Home / Library 데이터 자동 갱신 (Room Flow로 자동 갱신되나 검증 필요)
 - [ ] Analytics: `reading_session_saved` 이벤트 로깅

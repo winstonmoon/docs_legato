@@ -106,16 +106,17 @@ readingSessionRepository.finishSession(
 ## TODO
 
 - [x] `RecordReadingProgressScreen` Composable 구현
-- [ ] 책 표지 헤더 (진행률 바 + "X% Complete" 오버레이 포함)
-- [ ] 책 제목 / 저자 텍스트
-- [ ] 오늘 읽은 페이지 수 스텝퍼 (`-10` · `-1` · 숫자 직접 입력 · `+1` · `+10` 5버튼 구조)
-- [ ] 총 진행 페이지 표시 ("Total pages: X / Y")
-- [ ] Quick Notes 텍스트 에어리어 + 이미지/태그 첨부 버튼
-- [ ] "How was it?" 무드 선택 버튼 4개 (Boring / Okay / Good / Great)
-- [ ] Save Log 버튼 (하단 고정)
+- [x] 책 표지 헤더 (Coil `AsyncImage` + 진행률 바 포함)
+- [x] 책 제목 / 저자 텍스트
+- [x] 오늘 읽은 페이지 수 스텝퍼 (`-10` · `-1` · 숫자 직접 입력 · `+1` · `+10` 5버튼 구조)
+- [x] 총 진행 페이지 표시 ("Total pages: X / Y")
+- [x] Quick Notes 텍스트 에어리어
+- [x] "How was it?" 무드 선택 버튼 4개 (Boring / Okay / Good / Great) — `ReadingMood` 모델 구현
+- [x] Save Log 버튼 (하단 고정)
 - [x] `RecordProgressViewModel` / MVI State, Action, SideEffect 정의
-- [ ] 진행률 자동 계산 `((currentPage + pagesReadToday) / totalPages * 100)`
-- [ ] 완독 감지: 누적 페이지 >= totalPages 시 `ReadingStatus.FINISHED` 자동 전환
-- [ ] 완독 시 축하 다이얼로그 또는 애니메이션 표시
-- [ ] `BookRepository.upsertBook()` + `ReadingSessionRepository.finishSession()` 연동 (mood, note 포함)
+- [x] 진행률 자동 계산 (`pagesReadToday / totalPages * 100`)
+- [x] 완독 감지: 누적 페이지 >= totalPages 시 `ReadingStatus.FINISHED` 자동 전환
+- [x] 완독 시 축하 `AlertDialog` 표시 — `CompletionDialog` 컴포넌트 구현됨
+- [x] `LocalBookRepository.updateFinished()` + `LocalReadingSessionRepository.insertSession()` 연동 (mood, note 포함)
+- [ ] `todayDate()` 함수 실 날짜 반환 구현 (현재 `"today"` 리터럴 하드코딩 — `kotlinx-datetime` 도입 필요)
 - [ ] Analytics: `reading_session_saved`, `book_completed` (완독 시) 이벤트 로깅

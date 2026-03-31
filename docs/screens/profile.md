@@ -117,22 +117,22 @@ supabaseClient.auth.signOut()
 ## TODO
 
 - [x] `ProfileScreen` Composable 구현 (Dark / Light 공통)
-- [ ] 프로필 섹션 구현
+- [ ] 프로필 섹션 구현 (미착수)
     - [ ] 프로필 사진 (Coil KMP, 기본 아바타 fallback, 편집 FAB)
     - [ ] 사용자 이름 / "Reading X books this year" 표시
     - [ ] **독서 통계 3열 (Books Read / Pages Read / Day Streak)** 중앙 정렬 레이아웃
-- [ ] 설정 Preferences 섹션 구현
-    - [ ] Language 항목 (파랑 아이콘 + 현재 언어 표시 + `arrow_forward_ios`)
-    - [ ] Dark Mode 토글 (`PreferenceRepository.setThemeMode()`)
-- [ ] 설정 Account 섹션 구현
-    - [ ] Notifications 토글 (FCM 토픽 구독 / 해제)
-    - [ ] Account Details 항목 (`arrow_forward_ios`)
-    - [ ] Privacy & Security 항목 (`arrow_forward_ios`)
-    - [ ] Sign Out 버튼 (빨강 border, **`isLoggedIn == true`일 때만 표시**)
+- [x] 설정 Preferences 섹션 구현
+    - [x] Language 항목 (파랑 아이콘 + 현재 언어 표시 + `LanguagePickerBottomSheet`)
+    - [x] Dark Mode 토글 (`ThemeMode` DataStore 연동)
+- [x] 설정 Account 섹션 구현 (`AccountCard` 컴포넌트)
+    - [ ] Notifications 토글 (FCM 토픽 구독 / 해제 미연동)
+    - [x] Account Details 항목 (`arrow_forward_ios`)
+    - [x] Privacy & Security 항목 (`arrow_forward_ios`)
+    - [ ] Sign Out 버튼 (Supabase `signOut()` 미연동)
 - [ ] AdMob 배너 하단 고정 (Sticky)
-- [ ] 앱 버전 정보 표시 (`BuildConfig.VERSION_NAME`)
-- [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의
-- [ ] `StatsRepository.observeReadingStats()` → dayStreak 포함 연동
+- [x] 앱 버전 정보 표시 (`strings.profileVersion`)
+- [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의 (현재 stateless Composable)
+- [ ] `LocalBookRepository.observeReadingStats()` → dayStreak 포함 연동
 - [x] `PreferenceRepository` DataStore 연동 (테마, 언어 영속화)
 - [ ] Supabase Auth — 로그아웃 연동
 - [ ] Analytics: `screen_view` 이벤트 로깅

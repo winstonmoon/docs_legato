@@ -146,22 +146,21 @@ if (session != null) navigateToHome() else navigateToLogin()
 
 ### UI 구현 — LoginScreen
 - [x] `LoginScreen` Composable 구현 (Dark / Light 공통)
-- [ ] `auto_stories` 아이콘 + "Legato" 브랜드 헤더 구현
-- [ ] 환영 문구 / 서브 타이틀 텍스트 구현
-- [ ] Google 소셜 로그인 버튼 UI 구현
-- [ ] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
-- [ ] "Login with Email" Primary 버튼 구현 → `EmailLoginScreen`으로 이동
-- [ ] Continue as Guest — primary 텍스트 컬러 + 밑줄 스타일로 구현
+- [x] `auto_stories` 아이콘 + "Legato" 브랜드 헤더 구현
+- [x] 환영 문구 / 서브 타이틀 텍스트 구현
+- [x] Google 소셜 로그인 버튼 UI 구현
+- [x] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
+- [x] 이메일 + 비밀번호 입력 폼 UI 구현 (LoginScreen 내 인라인 구현; 별도 EmailLoginScreen으로 분리 미완)
+- [ ] "Login with Email" → 별도 `EmailLoginScreen`으로 분리 네비게이션 (현재 인라인 처리)
+- [ ] Continue as Guest 데이터 보호 안내 다이얼로그 표시 (현재 다이얼로그 없이 바로 Home 이동)
 - [x] `LoginViewModel` / MVI State, Action, SideEffect 정의
-- [ ] 로그인 성공 → Home 네비게이션 (백스택 제거)
-- [ ] 로딩 중 버튼 비활성화 처리
+- [x] 로그인 성공 → Home 네비게이션 (백스택 제거)
+- [x] 로딩 중 버튼 비활성화 처리
 
-### UI 구현 — EmailLoginScreen
-- [ ] `EmailLoginScreen` Composable 구현
-- [ ] 이메일 + 비밀번호 입력 폼 UI 구현
+### UI 구현 — EmailLoginScreen (미착수 — 현재 LoginScreen 내 인라인)
+- [ ] `EmailLoginScreen` 별도 Composable 구현
 - [ ] 비밀번호 가시성 토글 구현
 - [ ] `EmailLoginViewModel` / MVI State, Action, SideEffect 정의
-- [ ] 로그인 성공 → Home 네비게이션 (백스택 제거)
 - [ ] 로그인 실패 시 에러 메시지 표시 (Snackbar)
 - [ ] `AppRoute.EmailLogin` 라우트 추가
 
