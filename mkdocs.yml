@@ -87,7 +87,9 @@ nav:
     - 수동 도서 입력: screens/manual-entry.md
     - 독서 기록: screens/log-reading.md
     - 독서 진행 기록: screens/record-progress.md
+    - 도서 상세: screens/book-detail.md
     - 프로필 & 설정: screens/profile.md
+    - ISBN 바코드 스캐너: screens/barcode-scanner.md
   - 아키텍처:
     - 개요: architecture/overview.md
     - 모듈 구조: architecture/modules.md

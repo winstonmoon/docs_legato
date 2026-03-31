@@ -17,7 +17,7 @@
 | Google 로그인 버튼 | `OutlinedButton` — SVG Google 로고 — Supabase Auth OAuth |
 | Apple 로그인 버튼 | `OutlinedButton` — SVG Apple 로고 — iOS 전용 (expect/actual) |
 | "or" 구분선 | `HorizontalDivider` + 중앙 텍스트 |
-| Login with Email 버튼 | `Button` (Primary, filled) → `EmailLoginScreen`으로 이동 |
+| Login with Email 버튼 | `Button` (Primary, filled) → `AnimatedVisibility`로 이메일/비밀번호 폼 인라인 표시 |
 | 회원가입 링크 | "Don't have an account?" + **Sign Up** 텍스트 버튼 |
 | Continue as Guest | primary 텍스트 컬러 + 밑줄(`TextDecoration.Underline`) — 클릭 시 데이터 보호 안내 다이얼로그 표시 |
 | 게스트 데이터 보호 안내 다이얼로그 | `AlertDialog` — "내 독서 기록, 이 기기에만 있어요" / [지금 로그인하기] [나중에] |
@@ -28,16 +28,16 @@
 
 ---
 
-## 이메일 로그인 화면 (Email Login Screen)
+## 이메일 로그인 폼 (AnimatedVisibility 인라인)
 
-로그인 화면에서 **Login with Email** 버튼을 누르면 별도 `EmailLoginScreen`으로 이동한다.
+**Login with Email** 버튼 탭 시 별도 화면 이동 없이 `AnimatedVisibility`로 로그인 화면 내에 이메일 폼이 인라인으로 펼쳐진다.
 
 | 구성 요소 | 설명 |
 |---|---|
-| 뒤로가기 버튼 | `TopAppBar` 네비게이션 아이콘 → Login 화면으로 복귀 |
 | 이메일 입력 | `OutlinedTextField` (keyboardType = Email) |
 | 비밀번호 입력 | `OutlinedTextField` + 비밀번호 가시성 토글 |
 | Log In 버튼 | `Button` (Primary, filled) — 로그인 실행 |
+| 폼 접기 | 뒤로가기 / Cancel 시 `AnimatedVisibility`로 폼 숨김 |
 
 ---
 
@@ -54,7 +54,10 @@ data class LoginUiState(
 sealed interface LoginAction {
     data object GoogleLoginClick : LoginAction
     data object AppleLoginClick : LoginAction
-    data object EmailLoginClick : LoginAction           // → EmailLoginScreen 이동
+    data object EmailLoginClick : LoginAction           // → AnimatedVisibility로 이메일 폼 인라인 표시
+    data class EmailChange(val value: String) : LoginAction
+    data class PasswordChange(val value: String) : LoginAction
+    data object LoginWithEmailClick : LoginAction       // 이메일/비밀번호로 실제 로그인 실행
     data object GuestLoginClick : LoginAction           // → 데이터 보호 안내 다이얼로그 표시
     data object GuestWarningConfirmLater : LoginAction  // 다이얼로그 [나중에] → signInAnonymously() 후 Home
     data object GuestWarningLoginNow : LoginAction      // 다이얼로그 [지금 로그인하기] → 다이얼로그 닫기
@@ -63,33 +66,10 @@ sealed interface LoginAction {
 
 // LoginScreen SideEffect
 sealed interface LoginSideEffect {
-    data object NavigateToEmailLogin : LoginSideEffect
     data object NavigateToHome : LoginSideEffect
     data object NavigateToSignUp : LoginSideEffect
     data object ShowGuestWarningDialog : LoginSideEffect
     data class ShowError(val message: String) : LoginSideEffect
-}
-
-// EmailLoginScreen State
-data class EmailLoginUiState(
-    val email: String = "",
-    val password: String = "",
-    val emailError: String? = null,
-    val passwordError: String? = null,
-    val isLoading: Boolean = false,
-)
-
-// EmailLoginScreen Action
-sealed interface EmailLoginAction {
-    data class EmailChange(val value: String) : EmailLoginAction
-    data class PasswordChange(val value: String) : EmailLoginAction
-    data object LoginClick : EmailLoginAction
-}
-
-// EmailLoginScreen SideEffect
-sealed interface EmailLoginSideEffect {
-    data object NavigateToHome : EmailLoginSideEffect
-    data class ShowError(val message: String) : EmailLoginSideEffect
 }
 ```
 
@@ -98,19 +78,14 @@ sealed interface EmailLoginSideEffect {
 ## 네비게이션
 
 ```
-Login with Email 클릭 → EmailLoginScreen
+Login with Email 클릭 → AnimatedVisibility로 이메일/비밀번호 폼 인라인 표시
+이메일 로그인 성공 → Home (백스택 제거)
+이메일 로그인 실패 → 에러 Snackbar 표시
 Google / Apple 로그인 성공 → Home (백스택 제거)
 Continue as Guest 클릭 → 데이터 보호 안내 다이얼로그 표시
   ├─ [나중에] → signInAnonymously() → Home (백스택 제거)
   └─ [지금 로그인하기] → 다이얼로그 닫기 (로그인 화면 유지)
 Sign Up 클릭 → SignUpScreen
-EmailLoginScreen: 로그인 성공 → Home (백스택 제거)
-EmailLoginScreen: 실패 → 에러 Snackbar 표시
-```
-
-**AppRoute 추가:**
-```kotlin
-@Serializable data object EmailLogin : AppRoute
 ```
 
 ---
@@ -150,19 +125,11 @@ if (session != null) navigateToHome() else navigateToLogin()
 - [x] 환영 문구 / 서브 타이틀 텍스트 구현
 - [x] Google 소셜 로그인 버튼 UI 구현
 - [x] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
-- [x] 이메일 + 비밀번호 입력 폼 UI 구현 (LoginScreen 내 인라인 구현; 별도 EmailLoginScreen으로 분리 미완)
-- [ ] "Login with Email" → 별도 `EmailLoginScreen`으로 분리 네비게이션 (현재 인라인 처리)
+- [x] 이메일 + 비밀번호 입력 폼 `AnimatedVisibility` 인라인 구현 ("Login with Email" 탭 시 슬라이드 표시)
 - [ ] Continue as Guest 데이터 보호 안내 다이얼로그 표시 (현재 다이얼로그 없이 바로 Home 이동)
 - [x] `LoginViewModel` / MVI State, Action, SideEffect 정의
 - [x] 로그인 성공 → Home 네비게이션 (백스택 제거)
 - [x] 로딩 중 버튼 비활성화 처리
-
-### UI 구현 — EmailLoginScreen (미착수 — 현재 LoginScreen 내 인라인)
-- [ ] `EmailLoginScreen` 별도 Composable 구현
-- [ ] 비밀번호 가시성 토글 구현
-- [ ] `EmailLoginViewModel` / MVI State, Action, SideEffect 정의
-- [ ] 로그인 실패 시 에러 메시지 표시 (Snackbar)
-- [ ] `AppRoute.EmailLogin` 라우트 추가
 
 ### Google 로그인 외부 API 연동
 - [ ] Google Cloud Console에서 OAuth 2.0 클라이언트 ID 생성 (Android / iOS 각각)

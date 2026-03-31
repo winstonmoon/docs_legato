@@ -24,7 +24,7 @@
 | 사용자 이름 | Supabase Auth display_name |
 | 부제 텍스트 | "Reading X books this year" |
 | **독서 통계 3열** | **Books Read** / **Pages Read** / **Day Streak** (중앙 정렬, 구분선 포함) |
-| AdMob 배너 | 화면 최하단 고정 (Sticky) |
+| PremiumBanner | 화면 하단 고정 — 프리미엄 업그레이드 유도 배너 (AdMob 배너 대체) |
 
 ### 독서 통계 레이아웃 (3열)
 
@@ -34,12 +34,19 @@
 | Pages Read | 총 읽은 페이지 수 |
 | Day Streak | 연속 독서 일 수 |
 
-### 설정 섹션
+### 설정 섹션 (Preferences / Account 그룹 분리)
+
+#### Preferences 카드 (`PreferencesCard`)
 
 | 설정 항목 | 아이콘 색상 | 설명 |
 |---|---|---|
-| Language | 파랑 (`translate`) | 한국어 / 영어 / 일본어 / 중국어 |
-| Dark Mode | 보라 (`dark_mode`) | `ThemeMode` 토글, DataStore 영속화 |
+| Language | 파랑 (`translate`) | **System** / 한국어 / 영어 / 일본어 / 중국어 → `LanguagePickerBottomSheet` |
+| Dark Mode | 보라 (`dark_mode`) | `ThemeMode` 토글 (System / Light / Dark), DataStore 영속화 |
+
+#### Account 카드 (`AccountCard`)
+
+| 설정 항목 | 아이콘 색상 | 설명 |
+|---|---|---|
 | Notifications | 빨강 (`notifications`) | FCM 토픽 구독 / 해제 |
 | Account Details | 초록 (`person`) | 계정 정보 수정 |
 | Privacy & Security | 슬레이트 (`lock`) | 보안 설정 |
@@ -121,15 +128,16 @@ supabaseClient.auth.signOut()
     - [ ] 프로필 사진 (Coil KMP, 기본 아바타 fallback, 편집 FAB)
     - [ ] 사용자 이름 / "Reading X books this year" 표시
     - [ ] **독서 통계 3열 (Books Read / Pages Read / Day Streak)** 중앙 정렬 레이아웃
-- [x] 설정 Preferences 섹션 구현
+- [x] 설정 Preferences 섹션 구현 (`PreferencesCard` 컴포넌트)
     - [x] Language 항목 (파랑 아이콘 + 현재 언어 표시 + `LanguagePickerBottomSheet`)
+    - [x] "system" 언어 옵션 추가 (`LanguageOption("system", "System")`)
     - [x] Dark Mode 토글 (`ThemeMode` DataStore 연동)
 - [x] 설정 Account 섹션 구현 (`AccountCard` 컴포넌트)
     - [ ] Notifications 토글 (FCM 토픽 구독 / 해제 미연동)
     - [x] Account Details 항목 (`arrow_forward_ios`)
     - [x] Privacy & Security 항목 (`arrow_forward_ios`)
     - [ ] Sign Out 버튼 (Supabase `signOut()` 미연동)
-- [ ] AdMob 배너 하단 고정 (Sticky)
+- [x] `PremiumBanner` 하단 고정 (AdMob 배너 대체)
 - [x] 앱 버전 정보 표시 (`strings.profileVersion`)
 - [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의 (현재 stateless Composable)
 - [ ] `LocalBookRepository.observeReadingStats()` → dayStreak 포함 연동

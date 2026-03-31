@@ -20,7 +20,7 @@
 
 | 필드 | 필수 여부 | 키보드 타입 |
 |---|---|---|
-| 책 표지 이미지 | 선택 | 갤러리 / 카메라 (파일 피커) |
+| 책 표지 이미지 | 선택 | 점선 테두리 드롭존 + `add_a_photo` 아이콘; 탭 시 갤러리 / 카메라 선택 BottomSheet |
 | 책 제목 | ✅ 필수 | 텍스트 |
 | 저자 | ✅ 필수 | 텍스트 |
 | 전체 페이지 수 | ✅ 필수 | 숫자 |
@@ -28,9 +28,9 @@
 | 장르 태그 (Quick Select) | 선택 | 탭 토글 칩 |
 | Notes | 선택 | 멀티라인 텍스트 |
 
-### 장르 드롭다운 옵션
+### 장르 드롭다운 옵션 (12개)
 
-Fiction / Non-Fiction / Mystery / Fantasy / Sci-Fi / Biography
+Fiction / Non-Fiction / Mystery / Fantasy / Science Fiction / Biography / Self-Help / Business / History / Science / Romance / Poetry
 
 ### 장르 태그 퀵셀렉트 칩
 
@@ -38,10 +38,10 @@ Fiction / Non-Fiction / Mystery / Fantasy / Sci-Fi / Biography
 
 !!! note "동작 방식"
     - 장르 드롭다운과 태그 칩은 별개로 동작
-    - 드롭다운: 도서의 메인 카테고리
+    - 드롭다운: 도서의 메인 카테고리 (12개 옵션, Single-select)
     - 태그 칩: 세부 분류 (멀티 선택)
     - 필수 항목 미입력 시 인라인 에러 메시지 표시
-    - "Add to Library" 버튼: 제목 · 저자 · 페이지 수 입력 시 활성화
+    - "Add to Library" 버튼: `Scaffold bottomBar`에 고정 배치, 제목 · 저자 · 페이지 수 입력 시 활성화 + 로딩 인디케이터 표시
     - Cancel / 뒤로가기: 확인 다이얼로그 없이 즉시 뒤로
 
 ---

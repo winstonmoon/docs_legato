@@ -9,8 +9,10 @@
 | 구성 요소 | 설명 |
 |---|---|
 | "Set Your Reading Path" 타이틀 | 화면 상단 |
+| 서브타이틀 텍스트 | 타이틀 아래 안내 문구 |
 | 월간 독서 목표 슬라이더 | 1~15권 범위, 단계 레이블: Casual / Avid / Bibliophile |
 | 장르 선택 그리드 | Fiction, Sci-Fi, Mystery, History, Philosophy, Biography 등, 1~3개 복수 선택 |
+| ProgressDots | 화면 하단 페이지 인디케이터 (현재 온보딩 단계 시각화) |
 | Get Started 버튼 | `Button` (Primary, filled) — 온보딩 완료 후 Home으로 이동 |
 | 건너뛰기 버튼 | `TextButton` — 온보딩 생략 후 Home으로 이동 |
 
@@ -89,8 +91,10 @@ supabaseClient.from("profiles").upsert(
 
 ### UI 구현
 - [x] `OnboardingScreen` Composable 구현
+- [x] 서브타이틀 텍스트 (`strings.onboardingSubtitle`)
 - [x] 월간 목표 슬라이더 (1~15, Casual / Avid / Bibliophile 단계 레이블 표시)
 - [x] 장르 선택 그리드 (멀티 선택 칩, 1~3개 제한)
+- [x] ProgressDots 하단 페이지 인디케이터 (`ProgressDots()` 컴포넌트)
 - [x] Get Started `Button` 구현
 - [x] 건너뛰기 `TextButton` 구현
 - [x] `OnboardingViewModel` / MVI State, Action, SideEffect 정의

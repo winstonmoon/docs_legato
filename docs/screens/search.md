@@ -26,6 +26,8 @@
 | Hero 섹션 | 마스코트 일러스트 + "Find your next story" 헤딩 + 서브 텍스트 |
 | Recent Searches | 최근 검색어 도서 카드 목록 (표지, 제목, 저자, `history` 아이콘) + "Clear all" 버튼 |
 | Explore Genres | 장르 필터 칩 가로 스크롤 목록 |
+| Popular This Week | 이번 주 인기 도서 카드 (`orderBy=newest` API 기반, 표지 + 제목 + 저자) |
+| SearchCtaSection | 직접 입력 유도 배너 — "Can't find what you're looking for?" + "Add it manually" 버튼 |
 | 하단 내비게이션 | Home · Search · Library · Profile |
 
 !!! note "바코드 스캐너 아이콘"
@@ -51,6 +53,7 @@
 | 검색 입력 필드 | 뒤로가기 버튼 + 검색 입력창 |
 | 정렬 칩 | **관련도** · **최신순** (Google Books API 지원 2종) |
 | 검색 결과 리스트 | 책 표지, 제목, 저자, 별점(★), 출판 연도, Add/Added 버튼 |
+| ManualEntryFooter | 검색 결과 목록 최하단 — "찾는 책이 없으신가요?" + 직접 입력 유도 CTA |
 | 하단 내비게이션 | Home · Search · Library · Profile |
 
 !!! note "정렬 옵션 — Google Books API 제약"
@@ -392,9 +395,12 @@ if (addCount % 3 == 0) { // 3회마다 1번
     - [ ] Hero 섹션 (마스코트 이미지 + "Find your next story" 텍스트)
     - [x] Recent Searches 섹션 (도서 카드 + `history` 아이콘 + "Clear all")
     - [x] Explore Genres 섹션 (가로 스크롤 칩 목록, `BookGenre` enum 기반)
+    - [x] Popular This Week 섹션 (`orderBy=newest` 기반 인기 도서 카드)
+    - [x] SearchCtaSection — 직접 입력 유도 배너 ("Add it manually" 버튼)
 - [x] `SearchScreen` — Results State Composable 구현
     - [x] 정렬 칩: 관련도 · 최신순 (Google Books API 지원 2종, `SortOrder` enum 기반)
     - [x] 검색 결과 아이템 (표지, 제목, 저자, 별점, 출판 연도, Add/Added 버튼)
+    - [x] ManualEntryFooter — 검색 결과 최하단 직접 입력 유도 CTA
 - [x] `SearchScreen` — **No Results State** Composable 구현
     - [ ] 마스코트 일러스트 (물음표 붙은 책 캐릭터)
     - [x] "직접 입력하기" 버튼 → `ManualEntryClick` 액션 발행 → `ManualBookEntryScreen` 이동
