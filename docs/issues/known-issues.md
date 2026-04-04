@@ -24,23 +24,11 @@ val GOOGLE_BOOKS_API_KEY = BuildConfig.API_KEY // 인라이닝 방지
 
 ## 🟡 MEDIUM — 다음 스프린트 내 해결
 
-### 2. 설정 영속성 없음
+### 2. 설정 영속성 — 부분 완료 ⚠️
 
-- **문제:** `InMemoryAppPreferences`만 존재, 앱 재시작 시 테마/언어 초기화됨
-- **해결:** DataStore (Android) / NSUserDefaults (iOS) 구현 필요
-
-```kotlin
-// 구현 필요
-class DataStorePreferenceRepository(
-    private val dataStore: DataStore<Preferences>
-) : PreferenceRepository {
-    override fun observeThemeMode(): Flow<ThemeMode> =
-        dataStore.data.map { preferences ->
-            preferences[THEME_MODE_KEY]?.let { ThemeMode.valueOf(it) }
-                ?: ThemeMode.SYSTEM
-        }
-}
-```
+- **테마 / 언어:** `DataStoreAppPreferences`로 DataStore 영속화 완료. 앱 재시작 후에도 설정 유지됨.
+- **로그인 상태 (`isLoggedIn`):** DataStore에 저장하지 않아 앱 재시작 시 초기화됨. Supabase 세션 자동 복원 연동 전까지는 매번 로그인 필요.
+- **해결 필요:** `isLoggedIn` 영속화 또는 앱 시작 시 Supabase `currentSessionOrNull()` 세션 복원 로직 연동
 
 ---
 
@@ -104,13 +92,10 @@ Text(error.toUserFriendlyMessage())
 
 ---
 
-### 7. 미사용 코드
+### 7. 미사용 코드 ✅ 수정 완료
 
-다음 파일들 제거 필요:
-
-- `Greeting.kt`
-- `Platform.kt`
-- 빈 PlatformModule 파일들
+- `Greeting.kt`, `Platform.kt` 파일 삭제 완료 (2026-04-05)
+- 빈 PlatformModule 파일들 정리 완료
 
 ---
 
@@ -154,10 +139,10 @@ class HomeViewModelTest {
 |---|---|---|
 | API 키 바이너리 노출 | 🔴 HIGH | ✅ 완료 |
 | Release 난독화 없음 | 🔴 HIGH | ✅ 완료 |
-| 설정 영속성 없음 | 🟡 MEDIUM | ⬜ 미완 |
+| 설정 영속성 (테마/언어 완료, isLoggedIn 미완) | 🟡 MEDIUM | ⚠️ 부분 완료 |
 | HTTP Client 리소스 누수 | 🟡 MEDIUM | ⬜ 미완 |
 | 네비게이션 불일치 | 🟡 MEDIUM | ⬜ 미완 |
 | 페이지네이션 미구현 | 🟡 MEDIUM | ⬜ 미완 |
 | 에러 메시지 직접 노출 | 🔵 LOW | ⬜ 미완 |
-| 미사용 코드 | 🔵 LOW | ⬜ 미완 |
+| 미사용 코드 | 🔵 LOW | ✅ 완료 |
 | 테스트 없음 | 🔵 LOW | ⬜ 미완 |

@@ -126,7 +126,7 @@ if (session != null) navigateToHome() else navigateToLogin()
 - [x] Google 소셜 로그인 버튼 UI 구현
 - [x] Apple 소셜 로그인 버튼 UI 구현 (iOS 전용 expect/actual)
 - [x] 이메일 + 비밀번호 입력 폼 `AnimatedVisibility` 인라인 구현 ("Login with Email" 탭 시 슬라이드 표시)
-- [ ] Continue as Guest 데이터 보호 안내 다이얼로그 표시 (현재 다이얼로그 없이 바로 Home 이동)
+- [x] Continue as Guest 데이터 보호 안내 다이얼로그 표시
 - [x] `LoginViewModel` / MVI State, Action, SideEffect 정의
 - [x] 로그인 성공 → Home 네비게이션 (백스택 제거)
 - [x] 로딩 중 버튼 비활성화 처리
@@ -152,7 +152,7 @@ if (session != null) navigateToHome() else navigateToLogin()
 ### 게스트 로그인
 - [ ] Supabase Anonymous Auth 활성화 (Dashboard → Auth → Providers → Anonymous)
 - [ ] `GuestLoginClick` Action 처리 → `ShowGuestWarningDialog` SideEffect 발행
-- [ ] 데이터 보호 안내 다이얼로그 Composable 구현 (`AlertDialog`)
+- [x] 데이터 보호 안내 다이얼로그 Composable 구현 (`AlertDialog`)
   - 제목 "내 독서 기록, 이 기기에만 있어요" + 안내 문구 + [지금 로그인하기] / [나중에] 버튼
 - [ ] 다이얼로그 [나중에] 클릭 → `GuestWarningConfirmLater` Action → `supabaseClient.auth.signInAnonymously()` 후 Home 이동 (백스택 제거)
 - [ ] 다이얼로그 [지금 로그인하기] 클릭 → `GuestWarningLoginNow` Action → 다이얼로그 닫기 (로그인 화면 유지)
