@@ -137,6 +137,9 @@ supabaseClient.auth.signOut()
     - [x] Account Details 항목 (`arrow_forward_ios`)
     - [x] Privacy & Security 항목 (`arrow_forward_ios`)
     - [ ] Sign Out 버튼 (Supabase `signOut()` 미연동)
+        - [ ] `SignOutRow.onClick` 빈 람다 수정 — 현재 `onClick = {}` 로 아무 동작 없음 (`ProfileScreen.kt:447`)
+        - [ ] `ProfileScreen`에 `onNavigateToLogin` 콜백 파라미터 추가
+        - [ ] `AppHost.kt` Profile composable에 `onNavigateToLogin` 전달 및 `popUpTo(AppRoute.Login) { inclusive = true }` 처리
 - [x] `PremiumBanner` 하단 고정 (AdMob 배너 대체)
 - [x] 앱 버전 정보 표시 (`strings.profileVersion`)
 - [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의 (현재 stateless Composable)

@@ -123,3 +123,4 @@ when (windowSizeClass.widthSizeClass) {
 - [x] `LocalBookRepository.observeAllBooks().take(5)` 연동 (`observeRecentBooks()` 아닌 전체 목록 상위 5개)
 - [x] Bottom Navigation Bar 구현 (Home · Search · Library · Profile)
 - [ ] Android: `WindowWidthSizeClass` 기반 Adaptive Navigation 구현
+- [ ] "View All" / 책 항목 클릭 → Library 이동 시 백스택 중복 수정 — 현재 `navController.navigate(AppRoute.Library)` 직접 호출로 Library가 백스택에 중복 추가됨 (`AppHost.kt:193`, `popUpTo + launchSingleTop + restoreState` 적용 필요)

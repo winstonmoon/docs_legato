@@ -93,3 +93,5 @@ bookRepository.upsertBook(
 - [x] `LocalReadingSessionRepository.insertSession()` 연동
 - [ ] 저장 완료 후 Home / Library 데이터 자동 갱신 (Room Flow로 자동 갱신되나 검증 필요)
 - [ ] Analytics: `reading_session_saved` 이벤트 로깅
+- [ ] `selectedDate` `"Today"` 하드코딩 수정 — `kotlinx-datetime`으로 실제 날짜 반환 (`LogReadingViewModel.kt:22`)
+- [ ] `LogReadingEffect.ShowError` Snackbar 미구현 — `LogReadingScreen.kt:67` 핸들러가 빈 주석으로 방치됨
