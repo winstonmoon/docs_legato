@@ -12,6 +12,31 @@
 
 ---
 
+## 환경 분리 (dev / prod)
+
+빌드 타입에 따라 Supabase 프로젝트를 분리한다.
+
+| 빌드 타입 | Supabase 프로젝트 | applicationId |
+|---|---|---|
+| `debug` | dev 프로젝트 | `com.winstonmoon.legato.dev` |
+| `release` | prod 프로젝트 | `com.winstonmoon.legato` |
+
+**시크릿 주입 방식**
+
+- **Android**: `buildTypes`에 `buildConfigField`로 주입 → `BuildConfig.SUPABASE_URL` / `SUPABASE_ANON_KEY`
+- **iOS / commonMain**: `generateSupabaseConfig` Gradle 태스크가 빌드 시 `SupabaseConfig.kt`를 생성하여 commonMain에 주입 (기존 `generateApiConfig` 패턴과 동일)
+- **시크릿 관리**: `local.properties`에 4개 값 저장 → VCS 미커밋
+
+```properties
+# local.properties
+supabase.dev.url=https://YOUR_DEV_PROJECT.supabase.co
+supabase.dev.anon_key=YOUR_DEV_ANON_KEY
+supabase.prod.url=https://YOUR_PROD_PROJECT.supabase.co
+supabase.prod.anon_key=YOUR_PROD_ANON_KEY
+```
+
+---
+
 ## SDK 설정
 
 ```kotlin
@@ -29,10 +54,12 @@ implementation("io.ktor:ktor-client-darwin:$ktorVersion")
 ```
 
 ```kotlin
-// Supabase 클라이언트 초기화
+// SupabaseConfig.kt — generateSupabaseConfig 태스크로 빌드 시 자동 생성됨
+// Android는 BuildConfig.SUPABASE_URL / BuildConfig.SUPABASE_ANON_KEY 사용 가능
+// iOS / commonMain은 SupabaseConfig 객체를 직접 참조
 val supabaseClient = createSupabaseClient(
-    supabaseUrl = BuildConfig.SUPABASE_URL,
-    supabaseKey = BuildConfig.SUPABASE_ANON_KEY,
+    supabaseUrl = SupabaseConfig.DEV_URL,   // 실제로는 빌드 환경에 맞는 값 선택
+    supabaseKey = SupabaseConfig.DEV_ANON_KEY,
 ) {
     install(Auth)
     install(Postgrest)
@@ -160,10 +187,10 @@ Deno.serve(async (req) => {
 ## TODO
 
 ### 프로젝트 초기 설정
-- [ ] Supabase 프로젝트 생성 및 URL / Anon Key 발급
-- [ ] `local.properties`에 `SUPABASE_URL`, `SUPABASE_ANON_KEY` 추가
-- [ ] `BuildConfig`를 통해 클라이언트 초기화 주입 (`AppConfig.kt`)
+- [ ] Supabase Dashboard에서 dev / prod 프로젝트 각각 생성
+- [ ] `local.properties`에 4개 값 입력 (`supabase.dev.url`, `supabase.dev.anon_key`, `supabase.prod.url`, `supabase.prod.anon_key`)
 - [ ] `supabase-kt` 의존성 추가 — `postgrest-kt`, `auth-kt`, `storage-kt`, `realtime-kt`
+- [ ] `SupabaseClient` 싱글턴 구현 — 빌드 타입에 맞는 URL / anon key 선택
 - [ ] Koin DI에 `SupabaseClient` 싱글턴 등록
 
 ### 데이터베이스 스키마
