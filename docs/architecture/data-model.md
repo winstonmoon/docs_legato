@@ -16,6 +16,31 @@ data class Book(
     val thumbnailUrl: String?,
 ) {
     val primaryAuthor: String get() = authors.firstOrNull() ?: "Unknown Author"
+    val ratingDisplay: String get() = averageRating?.toString() ?: "-"
+    val ratingsCountDisplay: String get() = ratingsCount?.let { formatCount(it) } ?: ""
+}
+```
+
+### BookItemUiModel
+
+`BookEntity`를 UI 레이어에서 사용하기 위한 변환 모델입니다. `genre`, `notes`는 목록 뷰에 불필요하여 의도적으로 제외됩니다.
+
+```kotlin
+data class BookItemUiModel(
+    val id: String,
+    val title: String,
+    val author: String,
+    val thumbnailUrl: String?,
+    val status: ReadingStatus,
+    val currentPage: Int,
+    val totalPages: Int,
+    val rating: Float?,
+    val finishedDate: String?,
+) {
+    val progressPercent: Float
+        get() = if (totalPages > 0) currentPage.toFloat() / totalPages else 0f
+    val progressPercentInt: Int
+        get() = (progressPercent * 100).toInt()
 }
 ```
 
@@ -67,7 +92,8 @@ enum class ReadingStatus {
 ```kotlin
 data class UserPreference(
     val themeMode: ThemeMode,
-    val languageTag: String?,  // "ko", "en", "ja", null = 시스템
+    val languageTag: String,   // "ko", "en", "ja", "" = 시스템 기본값 (KMP iOS 환경에서 null 대신 빈 문자열 사용)
+    val isLoggedIn: Boolean,   // 앱 내 로그인/로그아웃 상태 관리용
 )
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
@@ -135,28 +161,60 @@ data class ReadingSessionEntity(
 
 ## Repository 인터페이스
 
+### BookRepository
+
+Google Books API 검색 전용입니다.
+
 ```kotlin
 interface BookRepository {
-    fun observeBooks(status: ReadingStatus? = null): Flow<List<BookEntity>>
+    suspend fun searchBooks(query: String): List<Book>
+}
+```
+
+### LocalBookRepository
+
+Room CRUD 및 통계 조회를 담당합니다. 모든 조회는 `Flow` 기반으로 동작합니다.
+
+```kotlin
+interface LocalBookRepository {
+    fun observeAllBooks(): Flow<List<BookEntity>>
+    fun observeBooksByStatus(status: ReadingStatus): Flow<List<BookEntity>>
     fun observeBook(bookId: String): Flow<BookEntity?>
-    suspend fun upsertBook(book: BookEntity)
+    fun observeReadingStats(): Flow<ReadingStats>   // StatsRepository 역할 통합
+    suspend fun insertBook(book: BookEntity)
+    suspend fun updateProgress(bookId: String, currentPage: Int)
+    suspend fun updateRating(bookId: String, rating: Float?)
+    suspend fun updateStatus(bookId: String, status: ReadingStatus)
     suspend fun deleteBook(bookId: String)
 }
+```
 
-interface ReadingSessionRepository {
-    suspend fun addSession(session: ReadingSessionEntity)
-    fun observeRecentSessions(limit: Int = 10): Flow<List<ReadingSession>>
-    fun observeSessionsForBook(bookId: String): Flow<List<ReadingSession>>
+!!! note "StatsRepository 없음"
+    별도의 `StatsRepository`는 존재하지 않습니다. 통계 조회는 `LocalBookRepository.observeReadingStats()`로 통합되어 있습니다.
+
+### LocalReadingSessionRepository
+
+독서 세션 저장 및 조회를 담당합니다.
+
+```kotlin
+interface LocalReadingSessionRepository {
+    suspend fun insertSession(session: ReadingSessionEntity)
+    fun observeSessionsByBookId(bookId: String): Flow<List<ReadingSessionEntity>>
 }
+```
 
-interface StatsRepository {
-    fun observeStats(): Flow<ReadingStats>
-}
+### AppPreferences
 
-interface PreferenceRepository {
-    fun observeThemeMode(): Flow<ThemeMode>
+테마·언어·로그인 상태를 관리합니다. `StateFlow` 기반으로 동작합니다.
+
+```kotlin
+class AppPreferences {
+    val themeMode: StateFlow<ThemeMode>
+    val languageTag: StateFlow<String>     // "" = 시스템 기본값
+    val isLoggedIn: StateFlow<Boolean>
+
     suspend fun setThemeMode(mode: ThemeMode)
-    fun observeLanguage(): Flow<String?>
-    suspend fun setLanguage(tag: String?)
+    suspend fun setLanguageTag(tag: String)
+    suspend fun setLoggedIn(loggedIn: Boolean)
 }
 ```
