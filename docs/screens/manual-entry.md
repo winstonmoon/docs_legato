@@ -179,10 +179,11 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
 ## TODO
 
 - [x] `ManualBookEntryScreen` Composable 구현 (Dark / Light 공통)
-- [ ] 표지 이미지 업로드 영역 구현 (미착수)
-    - [ ] 점선 테두리 드롭존 + `add_a_photo` 아이콘
-    - [ ] "Select Image" 버튼 탭 → 갤러리 / 카메라 선택 bottomsheet
-    - [ ] 선택 후 표지 미리보기 표시
+- [x] 표지 이미지 피커 구현 (expect/actual — Android PickVisualMedia / iOS PHPickerViewController)
+    - [x] 점선 테두리 드롭존 + `add_a_photo` 아이콘
+    - [x] "Select Image" 버튼 탭 → 갤러리에서 이미지 선택
+    - [x] 선택 후 512px 리사이즈 + JPEG 80% 압축 → `filesDir/covers/` 저장
+    - [x] 선택 후 표지 미리보기 표시 (Coil `AsyncImage`)
 - [x] 입력 폼 필드 구현
     - [x] 책 제목 (필수, 유효성 검사)
     - [x] 저자 (필수, 유효성 검사)
@@ -196,3 +197,17 @@ API에서 취득 가능하지만 **현재 데이터 모델에 없는** 유용한
 - [x] `ManualBookEntryViewModel` / MVI State, Action, SideEffect 정의
 - [x] `BookRepository.insertBook()` 연동 (genre, notes 포함; tags·coverUri 미구현)
 - [ ] Analytics: `book_added(source=manual)` 이벤트 로깅
+
+**표지 이미지 Supabase Storage 동기화**
+
+!!! info "설계 스펙"
+    상세 설계: `docs/superpowers/specs/2026-04-12-cover-image-cloud-sync-design.md`
+
+- [ ] `BookEntity`에 `cover_sync_status` 컬럼 추가 (`PENDING` / `SYNCED` / `null`)
+- [ ] Room migration 추가 (`ALTER TABLE book ADD COLUMN cover_sync_status TEXT`)
+- [ ] `RemoteImageRepository` 구현 — `file://` → Supabase Storage(`covers/{userId}/{bookId}.jpg`) 업로드
+- [ ] `BookRepositoryImpl` 구현 — 책 저장 시 업로드 시도, 실패 시 `PENDING` 상태 저장
+- [ ] `LocalBookRepository.syncPendingCovers()` — PENDING 목록 조회 + 재시도
+- [ ] `LegatoApplication.onCreate()`에서 앱 시작 시 `syncPendingCovers()` 호출
+- [ ] DI 모듈(`DataModule`)에 `BookRepositoryImpl`, `RemoteImageRepository` 등록
+- [ ] 책 삭제 시 Supabase Storage 파일도 함께 삭제 (`SYNCED` 상태인 경우)
