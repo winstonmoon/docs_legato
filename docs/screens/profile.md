@@ -50,7 +50,8 @@
 | Notifications | 빨강 (`notifications`) | FCM 토픽 구독 / 해제 |
 | Account Details | 초록 (`person`) | 계정 정보 수정 |
 | Privacy & Security | 슬레이트 (`lock`) | 보안 설정 |
-| Sign Out | (버튼) | Supabase Auth signOut → 로그인 화면 (**`isLoggedIn == true`일 때만 표시**) |
+| Sign Out | (버튼) | Supabase Auth signOut → 로그인 화면 (**`AuthState.AUTHENTICATED`일 때만 표시**) |
+| 게스트 계정 업그레이드 배너 | (`GuestUpgradeBanner`) | **`AuthState.GUEST`일 때만 표시** — "지금 계정을 만들면 기록이 사라지지 않아요" + [회원가입] / [로그인] 버튼 → `linkIdentity()` 호출 |
 
 ### 앱 정보
 
@@ -72,7 +73,9 @@ data class ProfileUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val notificationsEnabled: Boolean = false,
     val language: String = "ko",
-    val isLoggedIn: Boolean = false,  // false이면 Sign Out 버튼 숨김
+    val authState: AuthState = AuthState.UNAUTHENTICATED,
+    // authState == AUTHENTICATED → Sign Out 버튼 표시
+    // authState == GUEST → GuestUpgradeBanner 표시
     val isLoading: Boolean = false,
 )
 
@@ -82,6 +85,8 @@ sealed interface ProfileAction {
     data object LogoutClick : ProfileAction
     data object DeleteAccountClick : ProfileAction
     data object DeleteAccountConfirm : ProfileAction
+    data object GuestUpgradeSignUpClick : ProfileAction   // 게스트 업그레이드 → 회원가입
+    data object GuestUpgradeLoginClick : ProfileAction    // 게스트 업그레이드 → 로그인
 }
 
 sealed interface ProfileSideEffect {
@@ -136,10 +141,14 @@ supabaseClient.auth.signOut()
     - [ ] Notifications 토글 (FCM 토픽 구독 / 해제 미연동)
     - [x] Account Details 항목 (`arrow_forward_ios`)
     - [x] Privacy & Security 항목 (`arrow_forward_ios`)
-    - [ ] Sign Out 버튼 (Supabase `signOut()` 미연동)
+    - [ ] Sign Out 버튼 (Supabase `signOut()` 미연동, `AuthState.AUTHENTICATED`일 때만 표시)
         - [ ] `SignOutRow.onClick` 빈 람다 수정 — 현재 `onClick = {}` 로 아무 동작 없음 (`ProfileScreen.kt:447`)
         - [ ] `ProfileScreen`에 `onNavigateToLogin` 콜백 파라미터 추가
         - [ ] `AppHost.kt` Profile composable에 `onNavigateToLogin` 전달 및 `popUpTo(AppRoute.Login) { inclusive = true }` 처리
+- [ ] 게스트 계정 업그레이드 배너 (`GuestUpgradeBanner`, `AuthState.GUEST`일 때만 표시)
+    - [ ] "지금 계정을 만들면 기록이 사라지지 않아요" 문구 + [회원가입] / [로그인] 버튼
+    - [ ] [회원가입] → `GuestUpgradeSignUpClick` Action → SignUpScreen 이동
+    - [ ] [로그인] → `GuestUpgradeLoginClick` Action → `supabaseClient.auth.linkIdentity()` 호출
 - [x] `PremiumBanner` 하단 고정 (AdMob 배너 대체)
 - [x] 앱 버전 정보 표시 (`strings.profileVersion`)
 - [ ] `ProfileViewModel` / MVI State, Action, SideEffect 정의 (현재 stateless Composable)

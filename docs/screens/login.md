@@ -78,14 +78,20 @@ sealed interface LoginSideEffect {
 ## 네비게이션
 
 ```
-Login with Email 클릭 → AnimatedVisibility로 이메일/비밀번호 폼 인라인 표시
-이메일 로그인 성공 → Home (백스택 제거)
-이메일 로그인 실패 → 에러 Snackbar 표시
-Google / Apple 로그인 성공 → Home (백스택 제거)
-Continue as Guest 클릭 → 데이터 보호 안내 다이얼로그 표시
-  ├─ [나중에] → signInAnonymously() → Home (백스택 제거)
-  └─ [지금 로그인하기] → 다이얼로그 닫기 (로그인 화면 유지)
-Sign Up 클릭 → SignUpScreen
+앱 시작
+  ├─ AuthState.UNAUTHENTICATED → Login 화면 표시
+  ├─ AuthState.GUEST → Home 바로 이동 (로그인 화면 건너뜀)
+  └─ AuthState.AUTHENTICATED → Home 바로 이동 (로그인 화면 건너뜀)
+
+Login 화면
+  Login with Email 클릭 → AnimatedVisibility로 이메일/비밀번호 폼 인라인 표시
+  이메일 로그인 성공 → AuthState.AUTHENTICATED 저장 → Home (백스택 제거)
+  이메일 로그인 실패 → 에러 Snackbar 표시
+  Google / Apple 로그인 성공 → AuthState.AUTHENTICATED 저장 → Home (백스택 제거)
+  Continue as Guest 클릭 → 데이터 보호 안내 다이얼로그 표시
+    ├─ [나중에] → signInAnonymously() → AuthState.GUEST + currentUserId 저장 → Home (백스택 제거)
+    └─ [지금 로그인하기] → 다이얼로그 닫기 (로그인 화면 유지)
+  Sign Up 클릭 → SignUpScreen
 ```
 
 ---
@@ -112,7 +118,29 @@ supabaseClient.auth.signInAnonymously()
 앱 시작 시 세션 자동 복원:
 ```kotlin
 val session = supabaseClient.auth.currentSessionOrNull()
-if (session != null) navigateToHome() else navigateToLogin()
+when {
+    session == null -> navigateToLogin()
+    session.user?.isAnonymous == true -> {
+        saveAuthState(AuthState.GUEST)
+        navigateToHome()
+    }
+    else -> {
+        saveAuthState(AuthState.AUTHENTICATED)
+        navigateToHome()
+    }
+}
+```
+
+게스트 → 정식 계정 연결 (`linkIdentity`):
+```kotlin
+// Profile 화면 업그레이드 배너에서 호출
+// userId가 유지되므로 BookEntity / ReadingSessionEntity 마이그레이션 불필요
+supabaseClient.auth.linkIdentity(Email) {
+    this.email = email
+    this.password = password
+}
+// 또는 소셜 연결
+supabaseClient.auth.linkIdentity(Google)
 ```
 
 ---
@@ -154,10 +182,13 @@ if (session != null) navigateToHome() else navigateToLogin()
 - [ ] `GuestLoginClick` Action 처리 → `ShowGuestWarningDialog` SideEffect 발행
 - [x] 데이터 보호 안내 다이얼로그 Composable 구현 (`AlertDialog`)
   - 제목 "내 독서 기록, 이 기기에만 있어요" + 안내 문구 + [지금 로그인하기] / [나중에] 버튼
-- [ ] 다이얼로그 [나중에] 클릭 → `GuestWarningConfirmLater` Action → `supabaseClient.auth.signInAnonymously()` 후 Home 이동 (백스택 제거)
+- [ ] 다이얼로그 [나중에] 클릭 → `GuestWarningConfirmLater` Action → `supabaseClient.auth.signInAnonymously()` → `AuthState.GUEST` + `currentUserId` 저장 후 Home 이동 (백스택 제거)
 - [ ] 다이얼로그 [지금 로그인하기] 클릭 → `GuestWarningLoginNow` Action → 다이얼로그 닫기 (로그인 화면 유지)
-- [ ] 게스트 계정 전환 UI (Profile 화면에서 정식 계정으로 업그레이드 유도)
+- [ ] 게스트 계정 전환 UI (Profile 화면에서 정식 계정으로 업그레이드 유도 — `AuthState.GUEST`일 때만 표시)
 
 ### 공통 인증 로직
+- [ ] `AppPreferences`의 `isLoggedIn: Boolean`을 `AuthState` enum으로 교체 (`UNAUTHENTICATED` / `GUEST` / `AUTHENTICATED`)
+- [ ] `AppPreferences`에 `currentUserId: StateFlow<String?>` 추가 (게스트 포함 모든 상태에서 userId 보유)
 - [ ] Supabase Auth — 이메일/비밀번호 로그인 연동
-- [ ] 앱 시작 시 세션 자동 복원 로직 (세션 있으면 홈으로 바로 이동)
+- [ ] 앱 시작 시 세션 자동 복원 — `AuthState.GUEST` 또는 `AUTHENTICATED` 상태이면 홈으로 바로 이동 (`LoginViewModel` init 블록 수정)
+- [ ] 게스트 → 정식 계정 연결 시 `supabaseClient.auth.linkIdentity()` 사용 — 기존 userId 유지, 로컬 DB 마이그레이션 불필요
