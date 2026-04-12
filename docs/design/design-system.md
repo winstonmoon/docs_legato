@@ -146,6 +146,31 @@ ReadingProgressBar(
 
 ---
 
+---
+
+## 접근성 — 텍스트 크기 확대 대응
+
+시스템 설정에서 폰트 크기를 가장 크게 설정해도 텍스트 잘림·레이아웃 깨짐이 없도록 보장한다.
+
+### 정책
+
+| 항목 | 규칙 |
+|---|---|
+| 텍스트 단위 | **`sp` 전용** — `dp` 혼용 금지, 시스템 fontScale 자동 반영 |
+| 컨테이너 높이 | `height(N.dp)` 고정 지양 → `wrapContentHeight()` 사용 |
+| 텍스트 overflow | 카드 등 제한 공간: 최소 2줄 보장 후 `TextOverflow.Ellipsis` 허용 |
+| 스크롤 | `LazyColumn` / `verticalScroll` 우선 — 고정 높이 Column 지양 |
+| fontScale override | 금지 (`LocalDensity.current` 조작 불가) |
+
+### 검증 방법
+
+| 플랫폼 | 경로 |
+|---|---|
+| Android | 설정 → 디스플레이 → 폰트 크기 → 최대 |
+| iOS | 설정 → 손쉬운 사용 → 디스플레이 및 텍스트 크기 → 더 큰 텍스트 → 최대 |
+
+---
+
 ## TODO
 
 - [ ] `LegatoTheme` 구현 (ThemeMode: SYSTEM / LIGHT / DARK)
@@ -160,3 +185,13 @@ ReadingProgressBar(
 - [ ] `ReadingStatusBadge` (색상 구분)
 - [ ] Android 시스템 다크모드 감지 → `ThemeMode.SYSTEM` 반영
 - [ ] iOS 시스템 appearance 감지 → `ThemeMode.SYSTEM` 반영 (expect/actual)
+
+**접근성 — 텍스트 크기 확대 대응**
+
+- [ ] 각 화면에서 fontScale 최대 조건으로 수동 QA 진행 (Android / iOS 각각)
+- [ ] 고정 높이(`height(N.dp)`)로 텍스트 컨테이너를 지정한 컴포넌트 전수 검토 → `wrapContentHeight`로 교체
+- [ ] 카드 컴포넌트(`BookListItem`, `BookGridItem`) 내 텍스트 overflow 정책 확정 (최소 2줄 보장)
+- [ ] 홈 대시보드: 통계 카드 폰트 확대 시 레이아웃 깨짐 여부 확인
+- [ ] 검색 결과 리스트 아이템: 제목 / 저자 텍스트 2줄 이상 허용 처리
+- [ ] 하단 탭 레이블: fontScale 확대 시 잘림 방지 확인
+- [ ] Android: Lint `SpUsage` 규칙 활성화 여부 확인
